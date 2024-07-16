@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hierarchy Tree</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+        rel="stylesheet">
+    <style>
+        #header {
+            position: -webkit-sticky;
+            /* Safari */
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            margin: 0;
+            color: #ffffff
+        }
+
+        #menu * {
+            list-style: none;
+        }
+
+        #menu li {
+            line-height: 200%;
+            position: relative;
+            border: dotted 1px rgba(108, 108, 108, 0);
+        }
+
+        #menu li a {
+            color: #222;
+            text-decoration: none;
+        }
+
+        #menu li a:before {
+            content: "\025b8";
+            color: #ddd;
+            margin-right: 4px;
+        }
+
+        #menu .toggle {
+            cursor: pointer;
+            display: inline-block;
+            margin-right: 4px;
+        }
+
+        #menu .toggle:before {
+            content: "\025b8";
+            margin-right: 4px;
+        }
+
+        #menu .toggle.expanded:before {
+            content: "\025be";
+        }
+
+        .interior {
+            display: none;
+        }
+
+        #menu li:hover {
+            background-color: #dcdcdc;
+            border: dotted 1px rgb(108, 108, 108);
+        }
+
+        #menu ul>li {
+            font-weight: bold;
+            background-color: #eee;
+        }
+
+        #menu ul ul>li {
+            font-weight: normal;
+            background-color: #f5f5f5;
+        }
+
+        #menu ul ul ul>li {
+            font-weight: italic;
+            background-color: #f9f9f9;
+        }
+
+        table,
+        td,
+        th {
+            border: 1px solid;
+        }
+
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            display: inline-table;
+        }
+
+        .field1 {
+            color: rgb(0, 0, 0);
+            left: 150px;
+            position: absolute;
+            max-width: calc(100% - 600px);
+        }
+
+        .icono {
+            width: 20px;
+            right: 360px;
+            position: absolute;
+            top: 4px;
+            opacity: 0.25;
+        }
+
+        .icono:hover {
+            opacity: 0.35;
+        }
+
+        .field2 {
+            color: rgb(36, 55, 36);
+            right: 320px;
+            position: absolute;
+        }
+
+        .field3 {
+            color: rgb(0, 0, 0);
+            right: 260px;
+            position: absolute;
+        }
+
+        .field4 {
+            color: rgb(45, 51, 56);
+            right: 120px;
+            position: absolute;
+        }
+
+        .field5 {
+            color: black;
+            right: 10px;
+            position: absolute;
+        }
+
+        span {
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+
+           .icono_nat::after {   
+            content: attr(data-tooltip);
+            position: absolute;
+            background-color: #333;
+            color: #fff;
+            padding: 1px;
+            border-radius: 1px;
+            white-space: nowrap;
+            z-index: 10;
+            transform: translateX(-50%);
+            transition-delay: 0.5s;
+            font-size: 5px;
+            line-height: 8px;
+            font-weight: 600;
+            z-index: 1;
+        }  
+
+
+    </style>
+</head>
+
+<body style="font-family:'Open Sans', sans-serif;font-size:15px;margin:0;">
+
+    <div id="header">
+        <div
+            style=" display: flex;   justify-content: space-between;background-color: #ffffff;padding-top: 20px; padding-bottom: 10px;">
+            <span style="color: #091533;font-size: 20px;padding-left:10px;"> 338 PSP 002 - ROSFAR</span>
+            <div>
+                <!-- <label for="expand-options">Opciones de expansión:</label> -->
+                <select id="expand-options" style="margin-right: 10px;">
+                    <option value="nada">...</option>
+                    <option value="expand-all">Expandir todo</option>
+                    <option value="collapse-all">Contraer todo</option>
+                </select>
+            </div>
+        </div>
+        <div>
+            <div style="background-color: rgb(27, 58, 76);height: 30px;align-content: center;">
+                <span style="max-width: calc(100% - 600px); "></span>
+                <span style="right: 320px;position: absolute;">Un.</span>
+                <span style="right: 260px;position: absolute;">Cant.</span>
+                <span style="right: 120px;position: absolute;">Precio Unitario</span>
+                <span style="right: 40px;position: absolute;">Total</span>
+            </div>
+        </div>
+
+    </div>
+    <ul id="menu"></ul>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const elements_superior = ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '01', '01', '01', '01', '01', '02', '02', '02', '02', '02', '02', '02', '02', '02', '02', '03', '04', '05', '05', '05', '05', '05', '05', '06', '06', '06', '06', '06', '06', '06', '06', '06', '06', '06', '06', '06', '07', '07', '08', '08', '1.1', '1.1', '1.1', '1.1', '1.1', '1.1.1', '1.1.1', '1.2', '1.2', '1.2', '1.3', '1.4', '1.5', '11', '11.6', '15', '15.1', '2.1', '2.10', '2.2', '2.3', '2.4', '2.5', '2.6', '2.7', '2.8', '2.9', '2.9', '2.9', '24', '24.13', '24.13', '28', '28.1', '28.1', '3.1', '3.1', '36', '36.2', '38', '38.1', '39', '39', '39', '39.1', '39.2', '39.2', '39.3', '40', '40', '40.1', '40.2', '41', '41.1', '42', '42.1', '5.1', '5.2', '5.3', '5.4', '5.5', '5.6', '6.1', '6.10', '6.11', '6.12', '6.13', '6.2', '6.3', '6.4', '6.5', '6.6', '6.7', '6.8', '6.8', '6.9', '7.1', '7.1', '7.2', '7.2', '7.7.1', '7.7.1', '8.4', '8.5', 'O02.010', 'O02.010', 'O02.010', 'O02.010', 'O02.010', 'O02.010', 'O02.010', 'O02.010', 'O02.010', 'O02.010', 'O02.010', 'O02.010', 'O02.010', 'O02.010.011', 'O02.010.012', 'O02.010.013', 'O02.010.020', 'O02.010.021', 'O02.010.030', 'O02.010.031', 'O02.010.040', 'O02.010.060', 'O02.010.070', 'O02.010.090', 'O02.011', 'O02.011', 'O02.011', 'O02.011', 'O02.011', 'O02.011', 'O02.011', 'O02.011', 'O02.011', 'O02.011', 'O02.011', 'O02.011', 'O02.011', 'O02.020', 'O02.020', 'O02.020', 'O02.020', 'O02.020', 'O02.020', 'O02.020', 'O02.020', 'O02.020', 'O02.020', 'O02.020', 'O02.020', 'O02.020', 'O02.020.011', 'O02.020.012', 'O02.020.013', 'O02.020.020', 'O02.020.021', 'O02.020.030', 'O02.020.031', 'O02.020.040', 'O02.020.060', 'O02.020.070', 'O02.020.090', 'O03.0011', 'O03.0011', 'O03.0015', 'O03.0015', 'O03.0020', 'O03.0020', 'O03.0021', 'O03.0021', 'O03.0022', 'O03.0022', 'O03.0060', 'O03.0070', 'O03.0090', 'O03.0100', 'O03.0132', 'O03.0132', 'O03.0140', 'O03.0140', 'O03.0230', 'O03.0230', 'O03.0242', 'O03.0242', 'O03.0280', 'O03.0310', 'O03.0362', 'O03.0362', 'O03.0371', 'O03.0371', 'O03.0390', 'O03.0390', 'O03.0400', 'O03.0400', 'O09MO700', 'O09MO700', 'PAI400.0011', 'PAI400.0011', 'PAI400.0030', 'PAI400.0030', 'PAI500.0010', 'PAI500.0040', 'PAM120.0010', 'PAM140.0020', 'PAM140.0020', 'PAM140.0020', 'PAM140.0020', 'PAM600.0010', 'PAM600.0010', 'PAM700.0010', 'PAM700.0011', 'PAM800.0016', 'PAM800.0016', 'PAR300.1010', 'PAR300.1010', 'PCI100.0053', 'PCI100.0053', 'PCP100.0030', 'PCP100.0030', 'PCP100.0030', 'PCP100.0030a', 'PCP100.0030a', 'PCP100.0030a', 'PCP300.0020', 'PCP300.0020', 'PCP300.0020', 'PCP300.0020', 'PCP300.0020', 'PDE200.0010', 'PDE200.0010', 'PDE300.0010', 'PDE300.0010', 'PDE300.0010', 'PDE300.0010', 'PDE400.0010', 'PDE400.0020', 'PDE400.0030', 'PEA100.0010', 'PEA100.0010', 'PEA100.0010', 'PEA200.0040', 'PEA300.0010', 'PEA300.0010', 'PEA300.0110', 'PEA300.0310', 'PEX200.0014', 'PEX200.0016', 'PEX200.0016', 'PEX200.0018', 'PEX200.0020', 'PEX200.0020', 'PEX300.0012', 'PEX300.0012', 'PEX300.0112', 'PEX300.0112', 'PEX400.0020', 'PEX400.0020', 'PEX400.0040', 'PEX400.0050', 'PEX500.0010', 'PEX500.0061', 'PEX500.0061', 'PEX500.0061', 'PHA100.0010', 'PHA100.0010', 'PHA100.0010', 'PHA100.0020', 'PHA100.0020', 'PHA100.0020', 'PHA100.0020A', 'PHA100.0020A', 'PHA100.0020A', 'PHA100.0022', 'PHA100.0022', 'PHA100.0022', 'PHA100.0022c', 'PHA100.0022c', 'PHA100.0022c', 'PHA100.0024', 'PHA100.0024', 'PHA100.0024', 'PHA100.0024', 'PHA100.0024', 'PHA100.0024', 'PHA100.0024A', 'PHA100.0024A', 'PHA100.0024A', 'PHA100.0024A', 'PHA100.0024A', 'PHA100.0024A', 'PHA100.0026', 'PHA100.0026', 'PHA100.0026', 'PHA100.0026', 'PHA100.0026', 'PHA100.0026', 'PHA100.0026A', 'PHA100.0026A', 'PHA100.0026A', 'PHA100.0026A', 'PHA100.0026A', 'PHA100.0026A', 'PHA100.0028', 'PHA100.0028', 'PHA100.0028', 'PHA100.0028', 'PHA100.0028', 'PHA100.0028', 'PHA100.0028A', 'PHA100.0028A', 'PHA100.0028A', 'PHA100.0028A', 'PHA100.0028A', 'PHA100.0028A', 'PHA100.0028B', 'PHA100.0028B', 'PHA100.0028B', 'PHA100.0028B', 'PHA100.0028B', 'PHA100.0028B', 'PHA100.0029a', 'PHA100.0029a', 'PHA100.0029a', 'PHA100.0029a', 'PHA100.0029a', 'PHA100.0029a', 'PHA100.0030', 'PHA100.0030', 'PHA100.0030', 'PHA100.0040', 'PHA100.0040', 'PHA100.0040', 'PHA100.0040', 'PHA100.0040', 'PHA100.0040', 'PHA100.0040B', 'PHA100.0040B', 'PHA100.0040B', 'PHA100.0040B', 'PHA100.0040B', 'PHA100.0040B', 'PHA100.0104', 'PHA300.0010i', 'PHA300.0010i', 'PHA300.0010i', 'PHA300.0012i', 'PHA300.0012iB', 'PHA300.0030', 'PHA300.0030', 'PHA300.0030', 'PHA300.0032', 'PHA300.0110i', 'PHA300.0110i', 'PHA300.0112i', 'PHA300.0112i', 'PHA300.0130', 'PHA300.0130', 'PHA300.0132', 'PHA300.0132', 'PHA300.0210', 'PHA300.0210', 'PHA300.0210', 'PHA300.0210', 'PHA300.0210', 'PHA300.0212', 'PHA300.0212', 'PHA300.0220', 'PHA300.0220', 'PHA300.0222', 'PHA300.0222', 'PHA300.0230', 'PHA300.0230', 'PHA300.0232', 'PHA300.0232', 'PHA300.0310i', 'PHA300.0312i', 'PHA300.0410', 'PHA300.0412', 'PHA400.0108', 'PHA400.0108', 'PHA400.0108', 'PHA400.0108', 'PHA400.0108', 'PHA400.0110', 'PHA400.0110', 'PHA400.0110', 'PHA400.0110', 'PHA400.0110', 'PHA400.0114', 'PHA400.0114', 'PHA400.0114', 'PHA400.0114', 'PHA400.0114', 'PHA400.0114', 'PHA400.0114', 'PHA400.0114', 'PHA400.0114', 'PHA400.0118', 'PHA400.0118', 'PHA400.0118', 'PHA400.0118', 'PHA400.0118', 'PHA400.0118', 'PHA400.0118', 'PHA400.0118', 'PHA400.0118', 'PHA400.0120', 'PHA400.0120', 'PHA400.0120', 'PHA400.0120', 'PHA400.0120', 'PHA400.0120', 'PHA400.0120', 'PHA400.0120', 'PHA400.0120', 'PHA400.0122', 'PHA400.0122', 'PHA400.0122', 'PHA400.0122', 'PHA400.0122', 'PHA400.0122', 'PHA400.0122', 'PHA400.0122', 'PHA400.0122', 'PHO100.0020', 'PHO100.0020', 'PHO100.0020', 'PHO100.0020', 'PHO100.0020', 'PHO100.0020', 'PHO100.0020', 'PI1201.0021', 'PI1201.0040', 'PI1201.0040', 'PI1201.0040', 'PI1201.5002', 'PI1201.5002', 'PI1201.5002', 'PI1201.5002', 'PI1301.4010', 'PI1301.4010', 'PI1301.4010', 'PI1301.4011', 'PI1301.4011', 'PI1301.4011', 'PI1301.4012', 'PI1301.4012', 'PI1301.4012', 'PI1301.4013', 'PI1301.4013', 'PI1301.4013', 'PI1301.5001', 'PI1301.5001', 'PI7100.0030', 'PI7100.0030', 'PLI100.0010', 'PMM100.0010', 'PMM100.0010', 'PMM100.0020', 'PMM100.0020', 'PMM100.0030', 'PMM100.0030', 'PMO100.0022', 'PMO100.0022', 'PMO100.0022', 'PMO100.0022', 'PMO100.0022', 'PMO100.0022', 'PMO100.0022', 'PMO200.0010', 'PMO200.0012', 'PMO200.0012', 'PMO200.0012', 'PPI200.030', 'PPI200.030', 'PPI200.030', 'PPI200.030', 'PRE400.0022', 'PRE400.0022', 'PRP800.0010a', 'PRP800.0010a', 'PRP800.0010a', 'PRP800.0010a', 'PRP800.0010a', 'PRP800.0010a', 'PRP900.1010', 'PRP900.1010', 'PTE200.0010', 'PTE200.0010', 'PTE200.0110', 'PTE200.0110', 'PTE200.0110', 'PTE900.0120', 'PTE900.0120', 'PTE900.0120', 'PTE900.0120', 'PVA100.510', 'PVA100.510', 'PVA100.510', 'PVA100.512', 'PVA100.512'];
+
+            const elements_inferior = ['01', '02', '03', '05', '06', '07', '08', '11', '38', '39', '40', '41', '42', '04', '15', '28', '36', '24', '1.1', '1.2', '1.3', '1.4', '1.5', '2.1', '2.2', '2.3', '2.4', '2.5', '2.6', '2.8', '2.7', '2.9', '2.10', '3.1', '4.1', '5.1', '5.2', '5.3', '5.4', '5.5', '5.6', '6.1', '6.2', '6.3', '6.4', '6.6', '6.7', '6.8', '6.9', '6.5', '6.10', '6.11', '6.12', '6.13', '7.1', '7.2', '8.4', '8.5', 'M50.000.020', 'M50.000.030', 'M50.000.040', 'M50.000.036', 'M50.000.035', 'O03.0100', '1.1.1.1', 'M50.000.010', 'M50.000.012', 'M50.000.060', 'M50.000.0070', 'PVA100.510', 'PRZ100.0010', '11.6', 'PHA100.0104', '15.1', 'PRP800.0010a', 'PEX300.0112', 'PEX200.0016', 'PEX200.0016', 'PEX200.0016', 'PEX500.0061', 'PEX200.0016', 'PEX200.0016', 'PEX200.0016', 'PEX200.0020', 'PDE200.0010', 'PDE300.0010', 'PEX500.0010', '24.13', 'PTE200.0010', 'PTE200.0110', '28.1', 'PI1201.0021', 'PI1201.0040', 'PLI100.0010', 'M19.000.150', '36.2', 'PI7100.0030', '38.1', 'PLI100.0010B', '39.1', '39.2', '39.3', 'PCI100.0001', 'M03.200.1052', 'M03.400.0013', '39.3.1', '40.1', '40.2', 'PCI100.0012', 'PCI100.0014', '41.1', 'PCI100.0022', '42.1', 'PCI100.0053', 'PHA100.0030', 'PHA100.0020A', 'PHA100.0022', 'PHA100.0022c', 'PHA100.0020', 'PHA100.0010', 'PHA100.0028A', 'PHA100.0040B', 'PHA100.0040B', 'PHA100.0040B', 'PHA100.0029a', 'PHA100.0028B', 'PHA100.0026', 'PHA100.0024', 'PHA100.0024', 'PHA100.0024A', 'PHA100.0026A', 'PHA100.0040', '7.7.1', 'PHA100.0028', 'PAI400.0011', 'PCP100.0030', 'PAI400.0011', 'PCP100.0030a', 'M03.200.0020', 'PRP900.1010', 'PRE400.0022', 'PAI400.0030', 'O02.010.011', 'O02.010.012', 'O02.010.013', 'O02.010.020', 'O02.010.021', 'O02.010.030', 'O02.010.031', 'O02.010.040', 'O02.010.050', 'O02.010.060', 'O02.010.070', 'O02.010.080', 'O02.010.090', 'O01.102', 'O01.102', 'O01.102', 'O01.102', 'O01.102', 'O01.102', 'O01.102', 'O01.102', 'O01.102', 'O01.102', 'O01.102', 'O02.010.011', 'O02.010.012', 'O02.010.013', 'O02.010.020', 'O02.010.021', 'O02.010.030', 'O02.010.031', 'O02.010.040', 'O02.010.050', 'O02.010.060', 'O02.010.070', 'O02.010.081', 'O02.010.090', 'O02.020.011', 'O02.020.012', 'O02.020.013', 'O02.020.020', 'O02.020.021', 'O02.020.030', 'O02.020.031', 'O02.020.040', 'O02.020.050', 'O02.020.060', 'O02.020.070', 'O02.020.080', 'O02.020.090', 'O01.104', 'O01.104', 'O01.104', 'O01.104', 'O01.104', 'O01.104', 'O01.104', 'O01.104', 'O01.104', 'O01.104', 'O01.104', 'O01.021', 'O02.011', 'O01.022', 'O02.010', 'O01.021', 'O02.011', 'O01.021', 'O02.011', 'O01.022', 'O02.020', 'O01.902', 'O01.903', 'O01.903', 'O01.902', 'O01.022', 'O02.010', 'O01.022', 'O02.010', 'O01.042', 'O02.020', 'O01.042', 'O02.020', 'O01.902b', 'O01.903b', 'O01.042', 'O02.020', 'O01.042', 'O02.020', 'O01.042', 'O02.020', 'O01.043', 'O02.020', 'O01.043', 'O02.020', 'M08.010.0100', 'PAI500.0010', 'M08.010.0015', 'PAI500.0040', 'O03.0230', 'O03.0060', 'O03.0015', 'PAM800.0016', 'PAM600.0010', 'PAM700.0010', 'PAM700.0011', 'O03.0015', 'O03.0230', 'O03.0015', 'O03.0015', 'O03.0015', 'O03.0230', 'O03.0132', 'O03.0362', 'PCI110.0010', 'PCI110.0020', 'PHO100.0020', 'PCP300.0020', 'PAM140.0020', 'PCP300.0020', 'PAM140.0020', 'M01.600.0016', 'M03.200.1010', 'M03.300.0050', 'O03.0015', 'O03.0230', 'PMM100.0030', 'E21.020.0210', 'O03.0390', 'PDE400.0010', 'PDE400.0020', 'PDE400.0030', 'M19.000.150', 'O03.0390', 'O03.0390', 'O03.0390', 'PEA300.0010', 'PEA300.0110', 'PEA300.0310', 'PEA100.0010', 'M03.200.0060D', 'O03.0100', 'O03.0100', 'PPI200.030', 'E21.010.0205', 'PEX200.0014', 'PEX400.0050', 'E21.010.0216', 'PEX200.0018', 'PEX400.0050', 'E21.010.0250', 'E21.010.0252', 'PEX300.0012', 'PEX400.0020', 'E21.010.0216', 'E21.010.0180', 'E21.010.0180', 'PEX400.0040', 'O03.0371', 'M01.200.0040', 'M01.400.0010', 'PEX400.0050', 'PHA400.0108', 'M01.600.0016', 'M03.100.0002', 'PHA400.0114', 'M03.100.0002', 'M01.600.0020', 'PHA400.0114', 'M03.100.0002', 'M01.600.0020', 'PHA400.0114', 'M03.100.0002', 'M01.600.0020', 'PHA400.0114', 'M03.100.0002', 'M01.600.0020', 'PHA400.0118', 'M03.100.0002', 'M01.600.1010', 'M01.600.1020', 'PHA300.0010i', 'M01.600.0020', 'PHA400.0118', 'M03.100.0002', 'M01.600.1010', 'M01.600.1020', 'M01.600.0020', 'PHA300.0030', 'PHA400.0120', 'M03.100.0002', 'M01.600.1010', 'M01.600.1020', 'PHA300.0010i', 'M01.600.0020', 'PHA400.0120', 'M03.100.0002', 'M01.600.1010', 'M01.600.1020', 'M01.600.0020', 'PHA300.0030', 'PHA400.0118', 'M03.100.0002', 'M01.600.1010', 'M01.600.1020', 'PHA300.0012i', 'M01.600.0020', 'PHA400.0118', 'M03.100.0002', 'M01.600.1010', 'M01.600.1020', 'PHA300.0012i', 'M01.600.0020', 'PHA400.0118', 'M03.100.0002', 'M01.600.1010', 'M01.600.1020', 'M01.600.0020', 'PHA300.0012iB', 'PHA400.0118', 'M01.600.0016', 'M03.100.0002', 'M01.600.1010', 'M01.600.1020', 'PHA300.0032', 'PHA400.0110', 'M03.100.0002', 'M01.600.0020', 'PHA400.0122', 'M03.100.0002', 'M01.600.1010', 'M01.600.1020', 'PHA300.0010i', 'M01.600.0020', 'PHA400.0122', 'M03.100.0002', 'M01.600.1010', 'M01.600.1020', 'PHA300.0010i', 'M01.600.0020', 'O03.0021', 'PHA300.0110i', 'PHA300.0310i', 'PHA300.0312i', 'PHA300.0112i', 'PHA300.0132', 'PHA300.0130', 'PHA300.0310i', 'PHA300.0312i', 'PHA300.0132', 'PHA300.0210', 'PHA300.0220', 'PHA300.0212', 'PHA300.0222', 'PHA300.0210', 'PHA300.0230', 'PHA300.0212', 'PHA300.0232', 'M09.010.0101', 'M09.010.0112', 'M09.010.0130', 'M09.010.0140', 'M09.010.0150', 'M09.010.0101', 'M09.010.0112', 'M04.200.0020', 'M04.100.0001', 'M04.200.0020', 'M04.100.0001', 'M04.200.0010', 'M04.100.0001', 'M04.200.0010', 'M04.100.0001', 'PHA300.0410', 'PHA300.0412', 'M09.010.0112', 'M09.010.0112', 'O03.0020', 'O03.0140', 'O03.0021', 'M03.300.0050', 'M03.300.0030', 'O03.0020', 'O03.0140', 'O03.0021', 'M03.300.0050', 'M03.300.0030', 'O03.0020', 'O03.0011', 'O03.0021', 'M03.300.0030', 'M03.300.0050', 'M07.050.0010', 'E21.020.0165', 'E21.020.0180', 'E21.020.0170', 'O03.0011', 'O03.0020', 'O03.0021', 'M03.300.0030', 'M03.300.0050', 'M07.050.0010', 'E21.020.0165', 'E21.020.0180', 'E21.020.0170', 'O03.0011', 'O03.0020', 'O03.0021', 'M03.300.0030', 'M03.300.0050', 'M07.050.0010', 'E21.020.0165', 'E21.020.0180', 'E21.020.0170', 'O03.0011', 'O03.0020', 'O03.0021', 'M03.300.0030', 'M03.300.0050', 'M07.050.0010', 'E21.020.0165', 'E21.020.0180', 'E21.020.0170', 'M01.500.0010', 'M01.200.0030', 'M01.100.0010', 'M07.010.0001', 'PMO200.0010', 'PMM100.0020', 'PMM100.0010', 'PI1201.5002', 'M14.000.001', 'O03.0090', 'O03.0310', 'PI1301.4010', 'PI1301.4011', 'PI1301.4012', 'PI1301.4013', 'M14.000.100', 'M14.000.110', 'PI1301.5001', 'M14.000.101', 'M14.000.111', 'PI1301.5001', 'M14.000.102', 'M14.000.112', 'PI1301.5001', 'M14.000.103', 'M14.000.113', 'PI1301.5001', 'O03.0090', 'O03.0310', 'M14.000.003', 'O01.903', 'O03.0400', 'O09MO700', 'E21.020.0310', 'O09MO700', 'E21.020.0310', 'O09MO700', 'E21.020.0310', 'M01.500.0010', 'M01.100.0010', 'M07.010.0001', 'M07.020.0010', 'PMO200.0010', 'PMM100.0020', 'PMM100.0010', 'PMO200.0012', 'E21.020.0185', 'O03.0022', 'O03.0242', 'M17.010.063', 'M17.010.019', 'M17.010.034', 'O03.0070', 'PMO100.0022', 'PAM120.0010', 'M01.600.0018', 'M03.200.1020', 'M00.001', 'M07.010.0005', 'O01.902', 'O01.902b', 'M11.200.0210', 'PAR300.1010', 'M03.400.0040D', 'PTE900.0120', 'M03.400.0040D', 'PTE900.0120', 'PEA200.0040', 'O03.0060', 'O03.0280', 'M10.075.0020', 'PMM100.0030', 'PVA100.512', 'PVA100.514', '1.1.1', 'M03.000.001', 'O03.0100'];
+
+            const descripcion = ['TAREAS PRELIMINARES', 'EXCAVACIÓN Y MOVIMIENTO DE SUELO', 'LIMPIEZA DE OBRA Y TERRENO', 'ESTRUCTURA H°A° FUNDACIONES', 'ESTRUCTURA H°A°', 'CONTRAPISOS Y CARPETAS', 'AISLACIONES', 'REVOQUES', 'AYUDA DE GREMIO', 'HIGIENE Y SEGURIDAD', 'COORDINACIÓN DE RUBROS', 'SEGUROS', 'SEGURIDAD DE OBRA', 'DEMOLICIÓN', 'PAVIMENTOS', 'INSTALACIÓN CLOACAL Y PLUVIAL', 'INSTALACIÓN VENTILACIÓN', 'HERRERÍA Y ZINGUERÍA', 'Servicios', 'Obrador y pañol', 'Cartel de obra', 'Cerco de chapa + gráfica', 'Replanteo terreno - Agrimensor', 'Excavación pilotes.', 'Excavación cabezales.', 'Excavación vigas.', 'Relleno y compactación de suelo.', 'Bajo recorrido montacargas.', 'Tanque cisterna enterrado.', 'Retiro suelo vegetal.', 'Reservorio cloacal in situ.', 'Vereda', 'Excavación zapata corrida', 'Limpieza diaria de obra', 'Demolición', 'Pilotes', 'Cabezales', 'Vigas de fundación', 'Riostras', 'Bases montacargas', 'Zapata corrida para muros dobles', 'Columnas', 'Tabiques vistos', 'Vigas', 'Losas', 'Losas vistas', 'Vigas vistas', 'Escaleras hormigón visto.', 'Tabiques', 'Losa sobre pasillo, entre medianeras.', 'Reservorio cloacal in situ', 'Reservorio pluvial in situ', 'Losa y paredes para tanque cisterna enterrado y bombas.', 'Columnas vistas', 'P01.A, P01,E , P08 - Contrapiso s/terreno natural H8', 'P01.F - Contrapiso s/terreno natural reforzado H17', 'Revoque azotado hidrófugo sobre estructura en medianera', 'Pintura asfáltica sobre estructura en medianera', 'Alquiler baño quimico', 'Servicio de internet', 'Alquiler dispenser de agua', 'Servicio de alarma - Monitoreo', 'Servicio de alarma - kit (Incluye detector de movimiento, sirena interior y exterior)', 'Oficial herrero', 'Alambre Concertina De 45 Cm Doble Cruzada', 'Obrador 6.00m x 2.40m con aire acondicionado', 'Alquiler obrador - Flete entrega o retiro', 'Armado y desarmado de pañol temporal', 'Cartel de obra', 'Cerco de chapa + gráfica', 'Replanteo terreno - Agrimensor', 'Maquillaje completo en hormigon visto.', 'Maquillaje para hormigón visto exterior', 'P01.A, P01.B, P01.D  - Hormigón llaneado.', 'Piso de hormigón llaneado 12cm', 'Excavación pilote ø 40cm c/napa con retiro de suelo', 'Excavación mecánica fina c/retiro', 'Excavación mecánica fina c/retiro', 'Excavación mecánica fina c/retiro', 'Base de suelo seleccionado con cal al 3%', 'Excavación mecánica fina c/retiro', 'Excavación mecánica fina c/retiro', 'Excavación mecánica fina c/retiro', 'Excavación mecánica desmonte de suelo c/retiro', 'Demolicion material albanilería (martillo)', 'Retiro escombro (manual + volquete)', 'Excavación relleno manual', 'Cubierta de chapa sobre generadores', 'Techo de chapa galvanizada N°24 sin estructura', 'Techo de chapa galvanizada N°24 con estructura', 'Instalación cloacal y pluvial', 'Instalación clocal/pluvial - Tendido de caño PVC 110 enterrado', 'Instalación clocal/pluvial - Cámara de inspección premoldeada 60x60', 'Limpieza diaria de obra', 'Volquete 5m3', 'Ventilación generadores - zinguería', 'Conductos para extracción 15 cm de chapa galvanizada.', 'Ayuda de gremio', 'Ayuda de gremio', 'Servicio de higiene y seguridad', 'Bandejas protectoras', 'Técnico de higiene y seguridad', 'Higiene y seguridad - Visitas mensuales', 'Ménsula p/bandejas protectoras pintada antióxido+sintético', 'Chapa de hierro galvanizada calibre N°25', 'Técnico higiene y seguridad', 'Coordinación de rubros', 'Apoyo oficina técnica', 'Coordinación de rubros - Equipo de obra grande', 'Coordinación de rubros - Apoyo de OT grande', 'Seguros', 'Seguros - Seguro contra terceros por $20.000.000', 'Seguridad de obra', 'Seguridad - Serenos de obra', 'Pilote', 'Base', 'Viga de fundacion', 'Viga de fundacion', 'Base', 'Zapata', 'Columnas/Tabiques', 'Reservorio', 'Reservorio', 'Reservorio', 'Columnas/Tabiques vistos', 'Columnas/Tabiques visto', 'Vigas', 'Losas', 'Losas', 'Losas vistas', 'Vigas vistas', 'Escalera', 'Perfil ángulo para nariz escalera', 'Columnas/Tabiques', 'Aislación barrera vapor film polietileno 200mic', 'Contrapiso H8 armado, espesor 8cm', 'Aislación barrera vapor film polietileno 200mic', 'Contrapiso H17 armado, espesor 10cm', 'Perfil ángulo', 'Listel de terminación', 'Revoque grueso impermeable (mci)', 'Aislación barrera vapor pintura asfáltica', 'CS SAC oficial', 'CS Fondo cese laboral oficial', 'CS Horas no trabajadas', 'CS Contribución SS oficial', 'CS Aporte SS oficial', 'CS Contribución OS oficial', 'CS Aporte OS oficial', 'CS Seguro vida obligatorio oficial', 'CS ART fijo oficial', 'CS ART variable oficial', 'CS Acuerdo Edilizia vest+herr oficial', 'CS Plus oficial normal', 'CS Vianda oficial', 'Oficial Básico p/CS', 'Oficial Básico p/CS', 'Oficial Básico p/CS', 'Oficial Básico p/CS', 'Oficial Básico p/CS', 'Oficial Básico p/CS', 'Oficial Básico p/CS', 'Oficial Básico p/CS', 'Oficial Básico p/CS', 'Oficial Básico p/CS', 'Oficial Básico p/CS', 'CS SAC oficial', 'CS Fondo cese laboral oficial', 'CS Horas no trabajadas', 'CS Contribución SS oficial', 'CS Aporte SS oficial', 'CS Contribución OS oficial', 'CS Aporte OS oficial', 'CS Seguro vida obligatorio oficial', 'CS ART fijo oficial', 'CS ART variable oficial', 'CS Acuerdo Edilizia vest+herr oficial', 'CS Plus Oficial Hormigón', 'CS Vianda oficial', 'CS SAC Ay', 'CS Fondo cese laboral Ay', 'CS Horas no trabajadas Ay', 'CS Contribución SS Ay', 'CS Aporte SS Ay', 'CS Contribución OS Ay', 'CS Aporte OS Ay', 'CS Seguro vida obligatorio Ay', 'CS ART fijo ayudante Ay', 'CS ART variable Ay', 'CS Acuerdo Edilizia vest+herr Ay', 'CS Plus Ay común', 'CS Vianda Ay', 'Ayudante Básico p/CS', 'Ayudante Básico p/CS', 'Ayudante Básico p/CS', 'Ayudante Básico p/CS', 'Ayudante Básico p/CS', 'Ayudante Básico p/CS', 'Ayudante Básico p/CS', 'Ayudante Básico p/CS', 'Ayudante Básico p/CS', 'Ayudante Básico p/CS', 'Ayudante Básico p/CS', 'Oficial Hormigón', 'Cargas Sociales Oficial Hormigón', 'Oficial albañil', 'Cargas sociales oficial común', 'Oficial Hormigón', 'Cargas Sociales Oficial Hormigón', 'Oficial Hormigón', 'Cargas Sociales Oficial Hormigón', 'Oficial albañil', 'Cargas sociales ayudante común', 'Mano de obra Subcontratada 2° Nivel (2 Of + C.S.)', 'Mano de obra Subcontratada 3° Nivel (1,3 Of + C.S.)', 'Mano de obra Subcontratada 3° Nivel (1,3 Of + C.S.)', 'Mano de obra Subcontratada 2° Nivel (2 Of + C.S.)', 'Oficial albañil', 'Cargas sociales oficial común', 'Oficial albañil', 'Cargas sociales oficial común', 'Ayudante albañil', 'Cargas sociales ayudante común', 'Ayudante albañil', 'Cargas sociales ayudante común', 'Mano de obra Subcontratada 2° Nivel (2 Ay + C.S.)', 'Mano de obra Subcontratada 3° Nivel (1,3 Ay + C.S.)', 'Ayudante albañil', 'Cargas sociales ayudante común', 'Ayudante albañil', 'Cargas sociales ayudante común', 'Ayudante albañil', 'Cargas sociales ayudante común', 'Ayudante movimientos', 'Cargas sociales ayudante común', 'Ayudante movimientos', 'Cargas sociales ayudante común', 'Film de polietileno (e=200 micrones)', 'Aislación tendido', 'Pintura asfáltica 18lts', 'Aislación pintura', 'Ayudante albañil', 'Oficial techista', 'Oficial albañil', 'Fajeado contrapiso sin pendiente', 'Carga y tendido mortero (volcando)', 'Terminación mortero (enrasado)', 'Terminación mortero (fratas)', 'Oficial albañil', 'Ayudante albañil', 'Oficial albañil', 'Oficial albañil', 'Oficial albañil', 'Ayudante albañil', 'Oficial solado', 'Ayudante solado', 'Seguridad - Serenos de obra diurna', 'Seguridad - Serenos de obra nocturno', 'Hormigón estructural H8 elaborado en obra', 'Contrapiso armadura malla Q-131', 'Contrapiso sobre terreno sin pendiente (mano de obra)', 'Contrapiso armadura malla Q-131', 'Contrapiso sobre terreno sin pendiente (mano de obra)', 'Hormigón elaborado H21', 'Q-131 (150x150x5mm)', 'Alambre negro calibre N° 16', 'Oficial albañil', 'Ayudante albañil', 'Movimiento de material a hombro y con guinche', 'Martillo Demolición 12 Kg (1,1Kw)', 'Ayudante demolición', 'Demolición carga (paleando)', 'Demolición transporte (carretilla)', 'Demolición descarga (volcando)', 'Volquete 5m3', 'Ayudante demolición', 'Ayudante demolición', 'Ayudante demolición', 'Estructura de acero liviana en taller', 'Estructura de acero liviana montaje en obra', 'Pintura para estructura metálica', 'Estructura de acero liviana', 'Tubo estructural', 'Oficial herrero', 'Oficial herrero', 'Pintura base epoxi + esmalte poliuretánico (s/metálica)', 'Retroexcavadora (136Hp)', 'Excavación mecánica fina s/retiro', 'Traslado de suelo (carga +camión)', 'Pala cargadora (140Hp)', 'Excavación mecánica desmonte de suelo s/retiro', 'Traslado de suelo (carga +camión)', 'Pilotera', 'Desagotadora', 'Excavación pilote ø 40cm c/napa', 'Retiro de suelo (pala cargadora+camión)', 'Pala cargadora (140Hp)', 'Camión volcador 7m3 (160Hp)', 'Camión volcador 7m3 (160Hp)', 'Retiro de suelo - Traslado', 'Ayudante excavación', 'Tierra en cava', 'Cal en polvo 25kg', 'Traslado de suelo (carga +camión)', 'Estructura hormigón promedio, mano de obra 5hs/m3', 'Hormigón elaborado H21', 'Hierro nervurado cortado y doblado', 'Estructura hormigón promedio, mano de obra 35hs/m3', 'Hierro nervurado cortado y doblado', 'Hormigón elaborado H30', 'Estructura hormigón promedio, mano de obra 35hs/m3', 'Hierro nervurado cortado y doblado', 'Hormigón elaborado H30', 'Estructura hormigón promedio, mano de obra 35hs/m3', 'Hierro nervurado cortado y doblado', 'Hormigón elaborado H30', 'Estructura hormigón promedio, mano de obra 35hs/m3', 'Hierro nervurado cortado y doblado', 'Hormigón elaborado H30', 'Estructura hormigón promedio, mano de obra 44hs/m3', 'Hierro nervurado cortado y doblado', 'Servicio de bomba', 'Adicional por m3 bombeado', 'Encofrado completo losas y vigas por m3 para edificios', 'Hormigón elaborado H30', 'Estructura hormigón promedio, mano de obra 44hs/m3', 'Hierro nervurado cortado y doblado', 'Servicio de bomba', 'Adicional por m3 bombeado', 'Hormigón elaborado H30', 'Encofrado completo losas y vigas vistas por m3 para edificios', 'Estructura hormigón promedio, mano de obra 50hs/m3', 'Hierro nervurado cortado y doblado', 'Servicio de bomba', 'Adicional por m3 bombeado', 'Encofrado completo losas y vigas por m3 para edificios', 'Hormigón elaborado H30', 'Estructura hormigón promedio, mano de obra 50hs/m3', 'Hierro nervurado cortado y doblado', 'Servicio de bomba', 'Adicional por m3 bombeado', 'Hormigón elaborado H30', 'Encofrado completo losas y vigas vistas por m3 para edificios', 'Estructura hormigón promedio, mano de obra 44hs/m3', 'Hierro nervurado cortado y doblado', 'Servicio de bomba', 'Adicional por m3 bombeado', 'Encofrado completo tabiques por m3 para edificios', 'Hormigón elaborado H30', 'Estructura hormigón promedio, mano de obra 44hs/m3', 'Hierro nervurado cortado y doblado', 'Servicio de bomba', 'Adicional por m3 bombeado', 'Encofrado completo tabiques por m3 para edificios', 'Hormigón elaborado H30', 'Estructura hormigón promedio, mano de obra 44hs/m3', 'Hierro nervurado cortado y doblado', 'Servicio de bomba', 'Adicional por m3 bombeado', 'Hormigón elaborado H30', 'Encofrado completo tabiques vistos por m3 para edificios', 'Estructura hormigón promedio, mano de obra 44hs/m3', 'Hormigón elaborado H21', 'Hierro nervurado cortado y doblado', 'Servicio de bomba', 'Adicional por m3 bombeado', 'Encofrado completo tabiques vistos por m3 para edificios', 'Estructura hormigón promedio, mano de obra 10hs/m3', 'Hierro nervurado cortado y doblado', 'Hormigón elaborado H30', 'Estructura hormigón promedio, mano de obra 55hs/m3', 'Hierro nervurado cortado y doblado', 'Servicio de bomba', 'Adicional por m3 bombeado', 'Encofrado completo losas y vigas por m3 para edificios', 'Hormigón elaborado H30', 'Estructura hormigón promedio, mano de obra 55hs/m3', 'Hierro nervurado cortado y doblado', 'Servicio de bomba', 'Adicional por m3 bombeado', 'Encofrado completo losas y vigas por m3 para edificios', 'Hormigón elaborado H30', 'Oficial hormigón', 'Encofrado losas y vigas por m2 para edificios', 'Encofrado primer reapuntalado por m2 para edificios', 'Encofrado segundo reapuntalado por m2 para edificios', 'Encofrado tabiques por m2 para edificios', 'Encofrado tabiques vistos por m2 para edificios', 'Encofrado losas y vigas vistas por m2 para edificios', 'Encofrado primer reapuntalado por m2 para edificios', 'Encofrado segundo reapuntalado por m2 para edificios', 'Encofrado tabiques vistos por m2 para edificios', 'Encofrado losas y vigas parte alquilada por mes', 'Encofrado losas y vigas parte comprada por uso', 'Encofrado tabiques parte alquilada por mes', 'Encofrado tabiques parte comprada por uso', 'Encofrado losas y vigas parte alquilada por mes', 'Encofrado losas y vigas vistas parte comprada por uso', 'Encofrado tabiques parte alquilada por mes', 'Encofrado tabiques visto parte comprada por uso', 'Viga Kaufmann alquiler mensual', 'Puntal telescópico alquiler mensual', 'Cabezal fijo alquiler mensual', 'Soporte intermedio alquiler mensual', 'Trípode alquiler mensual', 'Viga Kaufmann alquiler mensual', 'Puntal telescópico alquiler mensual', 'Fenólico 18mm 2 caras buenas', 'Pino elliotis taeda en bruto', 'Fenólico 18mm 2 caras buenas', 'Pino elliotis taeda en bruto', 'Fenólico 18mm 2 caras con film', 'Pino elliotis taeda en bruto', 'Fenólico 18mm 2 caras con film', 'Pino elliotis taeda en bruto', 'Encofrado primer reapuntalado alquiler por mes', 'Encofrado segundo reapuntalado alquiler por mes', 'Puntal telescópico alquiler mensual', 'Puntal telescópico alquiler mensual', 'Oficial armador', 'Oficial movimiento Suelo', 'Oficial hormigón', 'Alambre negro calibre N° 16', 'Separador plástico 1000u', 'Oficial armador', 'Oficial movimiento Suelo', 'Oficial hormigón', 'Alambre negro calibre N° 16', 'Separador plástico 1000u', 'Oficial armador', 'Oficial encofrador', 'Oficial hormigón', 'Separador plástico 1000u', 'Alambre negro calibre N° 16', 'Clavo acero punta paris de 2" (50,8mm) x 1,5kg', 'Sierra circular (1,8Kw)', 'Taladro percutor (0,6kw)', 'Amoladora angular (2,2Kw)', 'Oficial encofrador', 'Oficial armador', 'Oficial hormigón', 'Separador plástico 1000u', 'Alambre negro calibre N° 16', 'Clavo acero punta paris de 2" (50,8mm) x 1,5kg', 'Sierra circular (1,8Kw)', 'Taladro percutor (0,6kw)', 'Amoladora angular (2,2Kw)', 'Oficial encofrador', 'Oficial armador', 'Oficial hormigón', 'Separador plástico 1000u', 'Alambre negro calibre N° 16', 'Clavo acero punta paris de 2" (50,8mm) x 1,5kg', 'Sierra circular (1,8Kw)', 'Taladro percutor (0,6kw)', 'Amoladora angular (2,2Kw)', 'Oficial encofrador', 'Oficial armador', 'Oficial hormigón', 'Separador plástico 1000u', 'Alambre negro calibre N° 16', 'Clavo acero punta paris de 2" (50,8mm) x 1,5kg', 'Sierra circular (1,8Kw)', 'Taladro percutor (0,6kw)', 'Amoladora angular (2,2Kw)', 'Cemento portland 50kg', 'Bolsón de piedra partida', 'Bolsón de arena', 'Agua', 'Mortero elaboración*', 'Movimiento de material envasado', 'Movimiento de material granel con carretilla y guinche', 'Instalación cloacal/pluvial - Caño Duratop X enterrado', 'Insumos instalación sanitaria', 'Oficial sanitarista', 'Ayudante sanitarista', 'Instalación cloacal/pluvial - Caño Duratop X 40mm enterrada', 'Instalación cloacal/pluvial - Caño Duratop X 50mm enterrada', 'Instalación cloacal/pluvial - Caño Duratop X 63mm enterrada', 'Instalación cloacal/pluvial - Caño Duratop X 110mm enterrada', 'Caño Duratop X 40mm', 'Codo Duratop X 40mm', 'Instalación cloacal/pluvial - Tendido de cañería enterrada', 'Caño Duratop X 50mm', 'Codo Duratop X 50mm', 'Instalación cloacal/pluvial - Tendido de cañería enterrada', 'Caño Duratop X 63mm', 'Codo Duratop X 63mm', 'Instalación cloacal/pluvial - Tendido de cañería enterrada', 'Caño Duratop X 110mm', 'Codo Duratop X 110mm', 'Instalación cloacal/pluvial - Tendido de cañería enterrada', 'Oficial sanitarista', 'Ayudante sanitarista', 'Insumos instalación ventilación', 'Mano de obra Subcontratada 3° Nivel (1,3 Of + C.S.)', 'Peón movimiento materiales', 'Obrero UOCRA ayudante movimientos', 'Guinche a engranajes (8Hp=6Kw)', 'Obrero UOCRA ayudante movimientos', 'Guinche a engranajes (8Hp=6Kw)', 'Obrero UOCRA ayudante movimientos', 'Guinche a engranajes (8Hp=6Kw)', 'Cemento portland 50kg', 'Bolsón de arena', 'Agua', 'Hidrófugo en pasta Ceresita 20kg', 'Mortero elaboración*', 'Movimiento de material envasado', 'Movimiento de material granel con carretilla y guinche', 'Mortero elaboración mecánica', 'Mezcladora (2hp=1,49kw)', 'Oficial mortero', 'Ayudante mortero', 'Base epoxi marca Revesta (lata 4 lts)', 'Esmalte poliuretánico marca Revesta (lata 4 lts)', 'Diluyente universal 20 lts marca Revesta', 'Oficial pintor', 'Mortero (M.C.I.1:3 arena mediana)', 'Revoque grueso fratasado (mano de obra)', 'Hormigón elaborado H25', 'Q-188 (150x150x6mm)', 'Insumo genérico unitario', 'Endurecedor no metálico', 'Mano de obra Subcontratada 2° Nivel (2 Of + C.S.)', 'Mano de obra Subcontratada 2° Nivel (2 Ay + C.S.)', 'Guardacanto de aluminio Atrim Quadra 3421 10x10mm, largo 2.50m', 'Colocación listel de terminación', 'Chapa galvanizada trapezoidal/sinusoidal', 'Techo de chapa (mano de obra)', 'Chapa galvanizada trapezoidal/sinusoidal', 'Techo de chapa (mano de obra)', 'Estructura de acero cubierta liviana para chapa', 'Oficial techista', 'Ayudante techista', 'Tornillo autoperforante 12x2mm 100u', 'Movimiento de material a hombro y con guinche', 'Cerco de chapa', 'Gráfica p/cerco de chapa', 'Alambre Concertina De 45 Cm Doble Cruzada', 'Insumo acero estructural', 'Oficial herrero'];
+
+            const unidad = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'gl', 'gl', 'm2', 'm2', 'día', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'gl', 'gl', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm2', 'm2', 'm2', 'm2', 'mes', 'mes', 'mes', 'mes', 'gl', 'hs', 'm', 'mes', 'u', 'gl', 'm2', 'm2', 'día', 'm2', 'm2', 'm2', 'm2', 'm', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm2', 'm2', 'm2', 'gl', 'm', 'u', 'sem', 'm3', 'u', 'm', 'gl', 'gl', 'gl', 'gl', 'gl', 'mes', 'u', 'm2', 'meses', 'gl', 'gl', 'mes', 'mes', 'gl', 'mes', 'gl', 'mes', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm3', 'm', 'm3', 'm2', 'm2', 'm2', 'm2', 'kg', 'm', 'm2', 'm2', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', '$', 'hs', 'hs', '$', 'hs', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', '$', 'hs', 'hs', '$', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', '$', 'hs', 'hs', '$', 'hs', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'm2', 'm2', 'lata', 'm2', 'hs', 'hs', 'hs', 'm2', 'm3', 'm2', 'm2', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'm3', 'm2', 'm2', 'm2', 'm2', 'm3', 'm2', 'kg', 'hs', 'hs', 't', 'hs', 'hs', 'm3', 'm3', 'm3', 'm3', 'hs', 'hs', 'hs', 'kg', 'kg', 'kg', 'kg', 'kg', 'hs', 'hs', 'm2', 'hs', 'm3', 'm3', 'hs', 'm3', 'm3', 'hs', 'hs', 'm', 'm3', 'hs', 'hs', 'hs', 'm3', 'hs', 'm3', 'bolsa', 'm3', 'm3', 'm3', 'kg', 'm3', 'kg', 'm3', 'm3', 'kg', 'm3', 'm3', 'kg', 'm3', 'm3', 'kg', 'm3', 'm3', 'kg', 'u', 'm3', 'm3', 'm3', 'm3', 'kg', 'u', 'm3', 'm3', 'm3', 'm3', 'kg', 'u', 'm3', 'm3', 'm3', 'm3', 'kg', 'u', 'm3', 'm3', 'm3', 'm3', 'kg', 'u', 'm3', 'm3', 'm3', 'm3', 'kg', 'u', 'm3', 'm3', 'm3', 'm3', 'kg', 'u', 'm3', 'm3', 'm3', 'm3', 'm3', 'kg', 'u', 'm3', 'm3', 'm3', 'kg', 'm3', 'm3', 'kg', 'u', 'm3', 'm3', 'm3', 'm3', 'kg', 'u', 'm3', 'm3', 'm3', 'hs', 'm2', 'm2', 'm2', 'm2', 'm2', 'm2', 'm2', 'm2', 'm2', 'm2', 'm2', 'm2', 'm2', 'm2', 'm2', 'm2', 'm2', 'm', 'u', 'u', 'u', 'u', 'm', 'u', 'm2', 'm3', 'm2', 'm3', 'm2', 'm3', 'm2', 'm3', 'm2', 'm2', 'u', 'u', 'hs', 'hs', 'hs', 'kg', 'bolsa', 'hs', 'hs', 'hs', 'kg', 'bolsa', 'hs', 'hs', 'hs', 'bolsa', 'kg', 'caja', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'bolsa', 'kg', 'caja', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'bolsa', 'kg', 'caja', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'bolsa', 'kg', 'caja', 'hs', 'hs', 'hs', 'bolsa', 'm3', 'bolson', 'm3', 'm3', 't', 't', 'm', 'u', 'hs', 'hs', 'm', 'm', 'm', 'm', 'm', 'u', 'm', 'm', 'u', 'm', 'm', 'u', 'm', 'm', 'u', 'm', 'hs', 'hs', 'u', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'hs', 'bolsa', 'bolson', 'm3', 'u', 'm3', 't', 't', 'm3', 'hs', 'hs', 'hs', 'lts', 'lts', 'lata', 'hs', 'm3', 'm2', 'm3', 'm2', 'u', 'kg', 'hs', 'hs', 'u', 'm', 'm2', 'm2', 'm2', 'm2', 'm2', 'hs', 'hs', 'caja', 't', 'm2', 'm2', 'm', 'kg', 'hs'];
+
+            const CanPres = ['1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '2', '60', '2', '54', '37,37', '50', '190', '16', '10', '407', '5', '10', '9', '1', '1', '54', '28', '29', '4', '2,11', '7', '35,82', '39', '145,76', '125', '73', '48,62', '5', '11,35', '3,75', '3', '5', '4', '2,91', '513', '112', '136', '136', '20', '10', '20', '10', '1', '1,5', '1', '10', '2', '1', '1', '1', '1', '850', '1', '56', '1', '4,25', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '103', '1', '', '1', '110', '4', '32', '200', '2', '20', '1', '0,33', '1', '1', '1', '10', '150', '360', '8', '1', '1', '10', '10', '1', '8', '1', '10', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '17', '1', '1', '1', '1', '1', '0,9', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '0,094', '0,138', '0,163', '0,139', '0,117', '0,049', '0,022', '0,08', '0,062', '0,036', '0,1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '0,094', '0,138', '0,163', '0,139', '0,117', '0,049', '0,022', '0,08', '0,062', '0,036', '0,1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1,1', '1', '0,008', '1,5', '0,2', '0,18', '1,25', '1', '0,1', '1', '1', '0,55', '0,55', '0,2', '0,2', '0,05', '0,05', '0,5', '0,5', '230', '270', '0,08', '1', '1', '2', '1', '0,1', '1', '0,001', '0,03', '0,041', '0,002', '2,925', '2,574', '1', '1', '1', '1,3', '0,879', '2,033', '0,44', '1,3', '1', '1', '5', '1', '0,24', '0,411', '0,04', '0,4', '1', '1,3', '0,42', '1', '1,3', '0,15', '0,12', '1', '0,126', '0,26', '0,333', '0,273', '1', '1,169', '1', '2', '1,3', '1', '1,05', '50', '1', '130', '1,05', '1', '140', '1,05', '1', '140', '1,05', '1', '130', '1,05', '1', '50', '0,03', '1,05', '1', '1,05', '1', '50', '0,03', '1,05', '1,05', '1', '1', '100', '0,03', '1,05', '1', '1,05', '1', '100', '0,03', '1,05', '1,05', '1', '1', '105', '0,03', '1,05', '1', '1,05', '1', '160', '0,03', '1,05', '1', '1,05', '1', '105', '0,03', '1,05', '1,05', '1', '1', '1,05', '160', '0,03', '1,05', '1', '1', '100', '1,05', '1', '135', '0,03', '1,05', '1', '1', '1', '100', '0,03', '1,05', '1', '1', '1,4', '10', '10', '10', '13,33', '13,33', '10', '10', '10', '13,33', '0,75', '0,5', '0,75', '0,5', '0,75', '0,5', '0,75', '0,5', '3,2', '1', '0,65', '0,35', '0,35', '6', '0,25', '1', '0,01', '1', '0,01', '1', '0,01', '1', '0,01', '0,75', '0,75', '0,5', '0,25', '1,93', '1,93', '0,965', '3', '0,1', '5,789', '2,895', '0,965', '3', '0,1', '14,474', '14,474', '4,825', '0,065', '3', '2', '8', '8', '3', '19,298', '19,298', '3,86', '0,12', '3', '2', '25', '12,5', '25', '22,193', '22,193', '3,86', '0,12', '3', '2', '25', '12,5', '25', '25,088', '22,193', '5,789', '0,08', '3', '2', '12,5', '7,5', '12,5', '4,1', '0,73', '0,57', '0,185', '1', '0,7', '2', '1', '6714,53', '18,679', '18,679', '0,398', '0,143', '0,073', '0,386', '1,3', '1,37', '1', '1,3', '0,89', '1', '1,3', '0,62', '1', '1,3', '0,26', '1', '1,9', '1,9', '585', '5', '40', '2,746', '0,728', '3,186', '1,164', '7,024', '1,164', '7,82', '0,9', '0,312', '1,56', '1', '0,205', '1,71', '1', '0,5', '0,5', '1', '0,1', '0,2', '0,001', '1,2', '0,02', '1', '0,12', '1', '50', '2', '0,5', '0,5', '0,4', '1', '1,1', '1', '1,1', '1', '1', '1,5', '1,5', '0,06', '0,01', '1', '1', '0,34', '12,15', '3,15'];
+
+            var Pres = [26714650.52, 35570178.7, 12514610.58, 82932480.29, 634800112.6, 19227026.92, 2721932.56, 10119632.5, 17363445.61, 37471055.5, 96111371.94, 887181.93, 60930282.56, 12009279.51, 2781486.96, 8366837.87, 2664009.12, 6840056.96, 3967146.27, 6971080.54, 76836.16, 102993.55, 424971.99, 108534.38, 23038.09, 23038.09, 30559.06, 23038.09, 23038.09, 22197.01, 23038.09, 49283.99, 23038.09, 8489086, 8146302.75, 349811.07, 568663.42, 568663.42, 551088.22, 551088.22, 226451.49, 968597.14, 951148.54, 874002.16, 752726.66, 812152.76, 933428.26, 1236773.04, 871933.54, 752726.66, 894276.87, 894276.87, 894276.87, 1039995.16, 20017.5, 24762.22, 10127.02, 3449.3, 60200.86, 74327.16, 37163.58, 34562.13, 930964.57, 11092.67, 4973.29, 378676.77, 373024.89, 2438263.06, 76836.16, 102993.55, 424971.99, 8075.87, 8075.87, 33692.45, 33692.45, 25537.5, 23038.09, 23038.09, 23038.09, 30559.06, 23038.09, 23038.09, 23038.09, 22197.01, 12386.86, 31271.55, 5625.58, 45047.02, 45047.02, 104170.62, 5675510.7, 31389.47, 555667.25, 192492, 11646.71, 903544, 45177.2, 11778215.72, 35691562.79, 1253761.7, 16189810.5, 7974319.2, 125376.17, 79356.47, 11906.5, 996789.9, 43881662.3, 21313950.2, 4388166.23, 2131395.02, 601805.68, 75225.71, 41331083, 4133108.3, 349811.07, 568663.42, 568663.42, 551088.22, 551088.22, 226451.49, 968597.14, 894276.87, 894276.87, 894276.87, 1039995.16, 951148.54, 874002.16, 752726.66, 752726.66, 812152.76, 933428.26, 955790.07, 16528.41, 871933.54, 1673.85, 18343.65, 1673.85, 23088.37, 2826.98, 13984.13, 10127.02, 3449.3, 260.68, 382.7, 452.03, 385.47, 324.46, 135.89, 61.01, 221.85, 0.28, 171.94, 99.83, 55.47, 277.32, 2773.18, 2773.18, 2773.18, 2773.18, 2773.18, 2773.18, 2773.18, 2773.18, 2773.18, 2773.18, 2773.18, 260.68, 382.7, 452.03, 385.47, 324.46, 135.89, 61.01, 221.85, 0.28, 171.94, 99.83, 221.84, 277.32, 220.65, 323.93, 382.61, 326.28, 274.64, 115.02, 51.64, 187.79, 0.28, 145.53, 84.5, 117.37, 234.73, 2347.33, 2347.33, 2347.33, 2347.33, 2347.33, 2347.33, 2347.33, 2347.33, 2347.33, 2347.33, 2347.33, 2773.18, 2995.3, 2773.18, 2828.93, 2773.18, 2995.3, 2773.18, 2995.3, 2773.18, 2464.97, 11092.67, 7210.24, 7210.24, 11092.67, 2773.18, 2828.93, 2773.18, 2828.93, 2347.33, 2464.97, 2347.33, 2464.97, 9389.3, 6103.05, 2347.33, 2464.97, 2347.33, 2464.97, 2347.33, 2464.97, 2347.33, 2464.97, 2347.33, 2464.97, 646.72, 962.46, 56785.61, 1996.68, 4812.3, 11092.67, 5602.11, 520.73, 5727.93, 1120.42, 1120.42, 5602.11, 4812.3, 5602.11, 5602.11, 5602.11, 4812.3, 5602.11, 4812.3, 7811.38, 8653.67, 120370.03, 5379.69, 3334.36, 5379.69, 3334.36, 89946.34, 4943.43, 3304.26, 5602.11, 4812.3, 33801.6, , 4812.3, 4230.01, 9783.41, 2117.41, 11646.71, 4812.3, 4812.3, 4812.3, 5099.63, 4559.09, 636.11, 11824.72, 2437.39, 11092.67, 11092.67, 15902.85, 46224.01, 18489.6, 3498.84, 42020.28, 17648.52, 3498.84, 134320.69, 28958.91, 23623.17, 15193.09, 42020.28, 12816.27, 12816.27, 3498.84, 4812.3, 15338.91, 5335.83, 3498.84, 44131.83, 89946.34, 1757.52, 220349.98, 1757.52, 97391.09, 220349.98, 1757.52, 97391.09, 220349.98, 1757.52, 97391.09, 220349.98, 1757.52, 97391.09, 274126.67, 1757.52, 366119.76, 1557.39, 275844.5, 97391.09, 274126.67, 1757.52, 366119.76, 1557.39, 97391.09, 335270.6, 307526.17, 1757.52, 366119.76, 1557.39, 275844.5, 97391.09, 307526.17, 1757.52, 366119.76, 1557.39, 97391.09, 335270.6, 274126.67, 1757.52, 366119.76, 1557.39, 298387.78, 97391.09, 274126.67, 1757.52, 366119.76, 1557.39, 298387.78, 97391.09, 274126.67, 1757.52, 366119.76, 1557.39, 97391.09, 377602.78, 274126.67, 89946.34, 1757.52, 366119.76, 1557.39, 377602.78, 71798.43, 1757.52, 97391.09, 332670.43, 1757.52, 366119.76, 1557.39, 275844.5, 97391.09, 332670.43, 1757.52, 366119.76, 1557.39, 275844.5, 97391.09, 5768.48, 23684.89, 2599.7, 1299.86, 22384.68, 28327.29, 29627.5, 2599.7, 1299.86, 28327.29, 20624.05, 16433.69, 18890.44, 16433.69, 20624.05, 28318.92, 18890.44, 28318.92, 2859.55, 6932.54, 2115.19, 1607.55, 7438.4, 2859.55, 6932.54, 14437.61, 199607.7, 14437.61, 199607.7, 26322.84, 199607.7, 26322.84, 199607.7, 3466.27, 1733.14, 6932.54, 6932.54, 5768.48, 5602.11, 5768.48, 3304.26, 67072.32, 5768.48, 5602.11, 5768.48, 3304.26, 67072.32, 5768.48, 5768.48, 5768.48, 67072.32, 3304.26, 5629.31, , , , 5768.48, 5768.48, 5768.48, 67072.32, 3304.26, 5629.31, , , , 5768.48, 5768.48, 5768.48, 67072.32, 3304.26, 5629.31, , , , 5768.48, 5768.48, 5768.48, 67072.32, 3304.26, 5629.31, , , , 8102.26, 39251.01, 24394.01, , 7431.38, 15331.99, 13214.58, 31389.47, 45.72, 7210.24, 6103.05, 28986.69, 29599.99, 30500.21, 34698.05, 2059.47, 740.23, 25295.26, 2606.48, 1029.56, 25295.26, 3402.62, 1260.55, 25295.26, 6726.05, 2534.32, 25295.26, 7210.24, 6103.05, 15.6, 7210.24, 4812.3, 4812.3, , 4812.3, , 4812.3, , 8102.26, 24394.01, , 24187.99, 7431.38, 15331.99, 13214.58, 7431.38, , 5238.15, 4812.3, 15971.69, 28228.99, 7592.08, 7210.24, 156218.91, 7002.64, 103527.15, 6514.46, 45.72, 1113.87, 11092.67, 9389.3, 21942.31, 5207.21, 11110.86, 32825.07, 11110.86, 32825.07, 59123.6, 11092.67, 9389.3, 29401.53, 33801.6, 64718.64, 30926.73, 21612.3, 2450.76, 11092.67]
+
+            var TotPres = [26714650.52,35570178.7,12514610.58,82932480.29,634800112.6,19227026.92,2721932.56,10119632.5,17363445.61,37471055.5,96111371.94,887181.93,60930282.56,12009279.51,2781486.96,8366837.87,2664009.12,6840056.96,3967146.27,6971080.54,153672.32,6179613,849943.98,5860856.52,860933.4233,1151904.5,5806221.4,368609.44,230380.9,9034183.07,115190.45,492839.9,207342.81,8489086,8146302.75,18889797.78,15922575.76,16491239.18,2204352.88,1162796.1442,1585160.43,34695149.5548,37094793.06,127394554.8416,94090832.5,59287151.48,45383282.0012,6183865.2,9896445.679,2822724.975,2682830.61,4471384.35,3577107.48,3026385.9156,10268977.5,2773368.64,1377274.72,469104.8,1204017.2,743271.6,743271.6,345621.3,930964.57,16639.005,4973.29,3786767.7,746049.78,2438263.06,76836.16,102993.55,424971.99,6864489.5,8075.87,1886777.2,33692.45,108534.375,23038.09,23038.09,23038.09,30559.06,23038.09,23038.09,23038.09,22197.01,12386.86,31271.55,5625.58,4639843.06,45047.02,0,5675510.7,3452841.7,2222669,6159744,2329342,1807088,903544,11778215.72,11778215.7207,1253761.7,16189810.5,7974319.2,1253761.7,11903470.5,4286340,7974319.2,43881662.3,21313950.2,43881662.3,21313950.2,601805.68,601805.68,41331083,41331083,349811.07,568663.42,568663.42,551088.22,551088.22,226451.49,968597.14,894276.87,894276.87,894276.87,1039995.16,951148.54,874002.16,752726.66,752726.66,812152.76,933428.26,955790.07,280982.97,871933.54,1673.85,18343.65,1673.85,23088.37,2544.282,13984.13,10127.02,3449.3,260.68,382.7,452.03,385.47,324.46,135.89,61.01,221.85,0.28,171.94,99.83,55.47,277.32,260.67892,382.69884,452.02834,385.47202,324.46206,135.88582,61.00996,221.8544,171.93716,99.83448,277.318,260.68,382.7,452.03,385.47,324.46,135.89,61.01,221.85,0.28,171.94,99.83,221.84,277.32,220.65,323.93,382.61,326.28,274.64,115.02,51.64,187.79,0.28,145.53,84.5,117.37,234.73,220.64902,323.93154,382.61479,326.27887,274.63761,115.01917,51.64126,187.7864,145.53446,84.50388,234.733,2773.18,2995.3,2773.18,2828.93,2773.18,2995.3,2773.18,2995.3,2773.18,2464.97,11092.67,7210.24,7210.24,11092.67,2773.18,2828.93,2773.18,2828.93,2347.33,2464.97,2347.33,2464.97,9389.3,6103.05,2347.33,2464.97,2347.33,2464.97,2347.33,2464.97,2347.33,2464.97,2347.33,2464.97,711.392,962.46,454.28488,2995.02,962.46,1996.6806,7002.6375,520.73,572.793,1120.42,1120.42,3081.1605,2646.765,1120.422,1120.422,280.1055,240.615,2801.055,2406.15,1796617.4,2336490.9,9629.6024,5379.69,3334.36,10759.38,3334.36,8994.634,4943.43,3.30426,168.0633,197.3043,67.6032,0,12386.8602,4230.01,9783.41,2117.41,15140.723,4230.0117,9783.4059,2117.412,6629.519,4559.09,636.11,59123.6,2437.39,2662.2408,4559.08737,636.114,18489.604,18489.6,4548.492,17648.5176,17648.52,4548.492,20148.1035,3475.0692,23623.17,1914.32934,10925.2728,4267.81791,3498.84171,3498.84,5625.5787,15338.91,10671.66,4548.492,44131.83,94443.657,87876,220349.98,228477.6,102260.6445,220349.98,246052.8,102260.6445,220349.98,246052.8,102260.6445,220349.98,228477.6,102260.6445,274126.67,87876,10983.5928,1635.2595,275844.5,102260.6445,274126.67,87876,10983.5928,1635.2595,102260.6445,335270.6,307526.17,175752,10983.5928,1635.2595,275844.5,102260.6445,307526.17,175752,10983.5928,1635.2595,102260.6445,335270.6,274126.67,184539.6,10983.5928,1635.2595,298387.78,102260.6445,274126.67,281203.2,10983.5928,1635.2595,298387.78,102260.6445,274126.67,184539.6,10983.5928,1635.2595,102260.6445,377602.78,274126.67,94443.657,281203.2,10983.5928,1635.2595,377602.78,71798.43,175752,102260.6445,332670.43,237265.2,10983.5928,1635.2595,275844.5,97391.09,332670.43,175752,10983.5928,1635.2595,275844.5,97391.09,8075.872,236848.9,25997,12998.6,298387.7844,377602.7757,296275,25997,12998.6,377602.7757,15468.0375,8216.845,14167.83,8216.845,15468.0375,14159.46,14167.83,14159.46,9150.56,6932.54,1374.8735,562.6425,2603.44,17157.3,1733.135,14437.61,1996.077,14437.61,1996.077,26322.84,1996.077,26322.84,1996.077,2599.7025,1299.855,3466.27,1733.135,11133.1664,10812.0723,5566.5832,9912.78,6707.232,33393.73072,16218.10845,5566.5832,9912.78,6707.232,83492.97952,83492.97952,27832.916,4359.7008,9912.78,11258.62,0,0,0,111320.12704,111320.12704,22266.3328,8048.6784,9912.78,11258.62,0,0,0,128019.87664,128019.87664,22266.3328,8048.6784,9912.78,11258.62,0,0,0,144719.62624,128019.87664,33393.73072,5365.7856,9912.78,11258.62,0,0,0,33219.266,28653.2373,13904.5857,0,7431.38,10732.393,26429.16,31389.47,306988.3116,134680.07296,113998.87095,11536.70262,4232.79857,2226.51533,13393.4473,2677.311,1014.1151,25295.26,3388.424,916.3084,25295.26,4423.406,781.541,25295.26,8743.865,658.9232,25295.26,13699.456,11595.795,9126,36051.2,192492,13214.5758,0,15331.9878,0,33801.5952,0,63359.6732,21954.609,0,37733.2644,7431.38,3143.05795,22596.9318,7431.38,0,2619.075,4812.3,1597.169,5645.798,7.59208,8652.288,3124.3782,7002.64,12423.258,6514.46,2286,2227.74,5546.335,4694.65,8776.924,5207.21,12221.946,32825.07,12221.946,32825.07,59123.6,16639.005,14083.95,1764.0918,338.016,64718.64,30926.73,7348.182,29776.734,34941.9105]
+
+            const NatC = ['Capítulo', 'Capítulo', 'Capítulo', 'Capítulo', 'Capítulo', 'Capítulo', 'Capítulo', 'Capítulo', 'Capítulo', 'Capítulo', 'Capítulo', 'Capítulo', 'Capítulo', 'Capítulo', 'Capítulo', 'Capítulo', 'Capítulo', 'Capítulo', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Material', 'Material', 'Material', 'Material', 'Material', 'Partida', 'Material', 'Material', 'Material', 'Material', 'Material', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Material', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Material', 'Material', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Material', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Mano de obra', 'Partida', 'Partida', 'Mano de obra', 'Partida', 'Mano de obra', 'Mano de obra', 'Mano de obra', 'Mano de obra', 'Mano de obra', 'Mano de obra', 'Mano de obra', 'Mano de obra', 'Mano de obra', 'Mano de obra', 'Mano de obra', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Mano de obra', 'Partida', 'Partida', 'Mano de obra', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Mano de obra', 'Partida', 'Partida', 'Mano de obra', 'Partida', 'Mano de obra', 'Mano de obra', 'Mano de obra', 'Mano de obra', 'Mano de obra', 'Mano de obra', 'Mano de obra', 'Mano de obra', 'Mano de obra', 'Mano de obra', 'Mano de obra', 'Mano de obra', 'Partida', 'Mano de obra', 'Partida', 'Mano de obra', 'Partida', 'Mano de obra', 'Partida', 'Mano de obra', 'Partida', 'Mano de obra', 'Mano de obra', 'Mano de obra', 'Mano de obra', 'Mano de obra', 'Partida', 'Mano de obra', 'Partida', 'Mano de obra', 'Partida', 'Mano de obra', 'Partida', 'Mano de obra', 'Mano de obra', 'Mano de obra', 'Partida', 'Mano de obra', 'Partida', 'Mano de obra', 'Partida', 'Mano de obra', 'Partida', 'Mano de obra', 'Partida', 'Material', 'Partida', 'Material', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Material', 'Material', 'Material', 'Partida', 'Partida', 'Partida', 'Maquinaria', 'Partida', 'Partida', 'Partida', 'Partida', 'Material', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Material', 'Partida', 'Partida', 'Partida', 'Maquinaria', 'Partida', 'Partida', 'Maquinaria', 'Partida', 'Partida', 'Maquinaria', 'Maquinaria', 'Partida', 'Partida', 'Maquinaria', 'Maquinaria', 'Maquinaria', 'Partida', 'Partida', 'Material', 'Material', 'Partida', 'Partida', 'Material', 'Material', 'Partida', 'Material', 'Material', 'Partida', 'Material', 'Material', 'Partida', 'Material', 'Material', 'Partida', 'Material', 'Material', 'Partida', 'Material', 'Material', 'Material', 'Partida', 'Material', 'Partida', 'Material', 'Material', 'Material', 'Material', 'Partida', 'Partida', 'Material', 'Material', 'Material', 'Partida', 'Material', 'Partida', 'Material', 'Material', 'Material', 'Material', 'Partida', 'Partida', 'Material', 'Material', 'Material', 'Partida', 'Material', 'Partida', 'Material', 'Material', 'Material', 'Partida', 'Material', 'Partida', 'Material', 'Material', 'Material', 'Material', 'Partida', 'Partida', 'Material', 'Material', 'Material', 'Material', 'Partida', 'Partida', 'Material', 'Material', 'Partida', 'Material', 'Material', 'Material', 'Partida', 'Material', 'Partida', 'Material', 'Material', 'Material', 'Partida', 'Material', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Material', 'Material', 'Material', 'Material', 'Material', 'Material', 'Material', 'Material', 'Material', 'Material', 'Material', 'Material', 'Material', 'Material', 'Material', 'Partida', 'Partida', 'Material', 'Material', 'Partida', 'Partida', 'Partida', 'Material', 'Material', 'Partida', 'Partida', 'Partida', 'Material', 'Material', 'Partida', 'Partida', 'Partida', 'Material', 'Material', 'Material', 'Maquinaria', 'Maquinaria', 'Maquinaria', 'Partida', 'Partida', 'Partida', 'Material', 'Material', 'Material', 'Maquinaria', 'Maquinaria', 'Maquinaria', 'Partida', 'Partida', 'Partida', 'Material', 'Material', 'Material', 'Maquinaria', 'Maquinaria', 'Maquinaria', 'Partida', 'Partida', 'Partida', 'Material', 'Material', 'Material', 'Maquinaria', 'Maquinaria', 'Maquinaria', 'Material', 'Material', 'Material', 'Material', 'Partida', 'Partida', 'Partida', 'Partida', 'Material', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Partida', 'Material', 'Material', 'Partida', 'Material', 'Material', 'Partida', 'Material', 'Material', 'Partida', 'Material', 'Material', 'Partida', 'Partida', 'Partida', 'Material', 'Mano de obra', 'Partida', 'Partida', 'Maquinaria', 'Partida', 'Maquinaria', 'Partida', 'Maquinaria', 'Material', 'Material', 'Material', 'Material', 'Partida', 'Partida', 'Partida', 'Partida', 'Maquinaria', 'Partida', 'Partida', 'Material', 'Material', 'Material', 'Partida', 'Partida', 'Partida', 'Material', 'Material', 'Material', 'Material', 'Mano de obra', 'Mano de obra', 'Material', 'Partida', 'Material', 'Partida', 'Material', 'Partida', 'Partida', 'Partida', 'Partida', 'Material', 'Partida', 'Partida', 'Partida', 'Partida', 'Material', 'Partida']
+
+            function formatearNumero(numero) {
+                // Convertir el número a una cadena con dos decimales
+                let numeroStr = numero.toFixed(2);
+
+                // Separar la parte entera y la decimal
+                let [entero, decimal] = numeroStr.split('.');
+
+                // Invertir la parte entera para insertar los puntos de mil
+                entero = entero.split('').reverse().join('');
+                entero = entero.replace(/(\d{3})(?=\d)/g, '$1.');
+                entero = entero.split('').reverse().join('');
+
+                // Reemplazar el punto decimal con una coma
+                return `${entero},${decimal}`;
+            }
+
+            Pres = Pres.map(formatearNumero);
+            TotPres = TotPres.map(formatearNumero);
+
+            function buildTree(superior, inferior) {
+                const tree = {};
+                superior.forEach((sup, i) => {
+                    if (!tree[sup]) {
+                        tree[sup] = [];
+                    }
+                    tree[sup].push(inferior[i]);
+                });
+                return tree;
+            }
+
+            function createTreeHT5ML(tree, parentName = elements_superior[0][0], isRoot = false) {
+                const ul = document.createElement('ul');
+                ul.className = 'interior';
+                if (isRoot) {
+                    ul.style.display = 'block'; // Ensure the root element's children are visible
+                    ul.style.backgroundColor = 'black';
+                }
+                tree[parentName].forEach((child, index) => {
+                    const li = document.createElement('li');
+                    if (tree[child]) {
+                        const toggle = document.createElement('div');
+                        toggle.className = 'toggle';
+                        toggle.textContent = child;
+                        toggle.addEventListener('click', function () {
+                            this.classList.toggle('expanded');
+                            const siblingUl = this.nextElementSibling;
+                            if (siblingUl) {
+                                siblingUl.style.display = siblingUl.style.display === 'block' ? 'none' : 'block';
+                            }
+                        });
+
+                        li.appendChild(toggle);
+                        li.appendChild(createTreeHTML(tree, child));
+                    } else {
+                        const a = document.createElement('a');
+                        a.href = "#";
+                        a.textContent = child;
+                        li.appendChild(a);
+                    }
+                    ul.appendChild(li);
+                });
+                return ul;
+            }
+
+            function createTreeHTML(tree, parentName = elements_superior[0][0], isRoot = false) {
+                const ul = document.createElement('ul');
+                ul.className = 'interior';
+                if (isRoot) {
+                    ul.style.display = 'block'; // Ensure the root element's children are visible
+                }
+                tree[parentName].forEach((child, index) => {
+                    const li = document.createElement('li');
+                    const container = document.createElement('div');
+                    container.className = 'toggle';
+
+
+                    // Add spans for additional fields
+                    const span1 = document.createElement('span');
+                    span1.className = 'field1';
+                    span1.textContent = descripcion[elements_inferior.indexOf(child)];
+                    span1.setAttribute('title', descripcion[elements_inferior.indexOf(child)]);
+                    const span2 = document.createElement('span');
+                    span2.className = 'field2';
+                    span2.textContent = unidad[elements_inferior.indexOf(child)];
+                    const span3 = document.createElement('span');
+                    span3.className = 'field3';
+                    span3.textContent = CanPres[elements_inferior.indexOf(child)];
+                    const span4 = document.createElement('span');
+                    span4.className = 'field4';
+                    span4.textContent = Pres[elements_inferior.indexOf(child)];
+                    const span5 = document.createElement('span');
+                    span5.className = 'field5';
+                    span5.textContent = TotPres[elements_inferior.indexOf(child)];
+
+                    switch (NatC[elements_inferior.indexOf(child)]) {
+                        case 'Capítulo': src_icon = "https://cdn-icons-png.flaticon.com/512/6702/6702850.png"; break;
+                        case 'Partida': src_icon = "https://cdn-icons-png.flaticon.com/512/6911/6911872.png"; break;
+                        case 'Mano de obra': src_icon = "https://cdn-icons-png.flaticon.com/512/2760/2760298.png"; break;
+                        case 'Maquinaria': src_icon = "https://cdn-icons-png.flaticon.com/512/6132/6132252.png"; break;
+                        case 'Material': src_icon = "https://cdn-icons-png.flaticon.com/512/6450/6450177.png"; break;
+                        default: src_icon = "https://cdn-icons-png.flaticon.com/512/2760/2760298.png";
+                    }
+
+                    const icono_nat = document.createElement('IMG');
+                    icono_nat.className = 'icono';
+                    icono_nat.setAttribute("src", src_icon);
+                    icono_nat.setAttribute('title', NatC[elements_inferior.indexOf(child)]);
+
+                    container.appendChild(document.createTextNode(child));
+                    container.appendChild(span1);
+                    container.appendChild(span2);
+                    container.appendChild(span3);
+                    container.appendChild(span4);
+                    container.appendChild(span5);
+                    container.appendChild(icono_nat);
+
+                    li.appendChild(container);
+
+                    if (tree[child]) {
+                        li.appendChild(createTreeHTML(tree, child));
+                        container.addEventListener('click', function () {
+                            this.classList.toggle('expanded');
+                            const childUl = container.nextElementSibling;
+                            if (childUl) {
+                                childUl.style.display = childUl.style.display === 'block' ? 'none' : 'block';
+                            }
+                        });
+                    }
+
+                    ul.appendChild(li);
+                });
+                return ul;
+            }
+
+            const tree = buildTree(elements_superior, elements_inferior);
+            const menu = document.getElementById('menu');
+            const rootLi = document.createElement('li');
+            rootLi.textContent = elements_superior[0][0];
+            rootLi.appendChild(createTreeHTML(tree, elements_superior[0][0], true));
+            menu.appendChild(rootLi);
+
+            const expandOptions = document.getElementById('expand-options');
+            expandOptions.addEventListener('change', function () {
+                const selectedOption = expandOptions.value;
+
+                if (selectedOption === 'expand-all') {
+                    expandAll(tree);
+                } else if (selectedOption === 'collapse-all') {
+                    collapseAll(tree);
+                } else if (selectedOption === 'expand-level-2') {
+                    expandToLevel(tree, 'Elemento 0', 2);
+                }
+            });
+
+            // Función para expandir todo el árbol recursivamente
+            function expandAll(tree) {
+                const toggles = document.querySelectorAll('.toggle');
+                toggles.forEach(toggle => {
+                    toggle.classList.add('expanded');
+                    const siblingUl = toggle.nextElementSibling;
+                    if (siblingUl) {
+                        siblingUl.style.display = 'block';
+                    }
+                });
+            }
+
+            // Función para contraer todo el árbol recursivamente, excepto el elemento raíz
+            function collapseAll(tree) {
+                const toggles = document.querySelectorAll('.toggle');
+                toggles.forEach((toggle, index) => {
+                    if (index !== 0) { // Skip the root element
+                        toggle.classList.remove('expanded');
+                        const siblingUl = toggle.nextElementSibling;
+                        if (siblingUl) {
+                            siblingUl.style.display = 'none';
+                        }
+                    }
+                });
+            }
+
+            // Función para expandir hasta un nivel específico del árbol
+            function expandToLevel(tree, parentName, level) {
+                if (level === 0) return;
+
+                const ul = document.querySelector(`#${parentName} > ul`);
+                if (ul) {
+                    ul.style.display = 'block';
+                    const children = ul.children;
+                    for (let i = 0; i < children.length; i++) {
+                        const child = children[i];
+                        const toggle = child.querySelector('.toggle');
+                        if (toggle) {
+                            toggle.classList.add('expanded');
+                            const siblingUl = toggle.nextElementSibling;
+                            if (siblingUl) {
+                                siblingUl.style.display = 'block';
+                                expandToLevel(tree, toggle.textContent.trim(), level - 1);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
