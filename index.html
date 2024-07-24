@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>338 PSP 001</title>
+    <link rel="icon" type="image/x-icon"
+        href="https://edilizia.com.ar/wp-content/uploads/2020/06/cropped-Isologotipo2-e1591298183769-1-150x150.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
@@ -20,12 +22,37 @@
             color: #ffffff
         }
 
+        @media only screen and (max-width: 1100px) {
+
+
+            body {
+                overflow-x: scroll;
+            }
+
+            ul {
+                padding-inline-start: 20px;
+            }
+
+            .field1 {
+                left: 115px;
+            }
+
+
+
+        }
+
         @media only screen and (max-width: 950px) {
 
             #header {
                 color: rgb(27, 58, 76);
             }
+
+            #abrirModal {
+                display: none;
+            }
         }
+
+
 
         #menu * {
             list-style: none;
@@ -75,6 +102,7 @@
         #menu li:hover {
             background-color: #dcdcdc;
             border: dotted 1px rgb(108, 108, 108);
+            /*transition: 0.3s;*/
         }
 
         #menu ul>li {
@@ -85,10 +113,11 @@
         #menu ul ul>li {
             font-weight: normal;
             background-color: #f5f5f5;
+            font-weight: 500;
         }
 
         #menu ul ul ul>li {
-            font-weight: italic;
+            font-weight: normal;
             background-color: #f9f9f9;
         }
 
@@ -108,13 +137,13 @@
             color: rgb(0, 0, 0);
             left: 150px;
             position: absolute;
-            max-width: calc(100% - 600px);
-            min-width: 200px;
+            max-width: calc(100% - 800px);
+            min-width: 50px;
         }
 
         .icono {
             width: 20px;
-            right: 370px;
+            right: 570px;
             position: absolute;
             top: 4px;
             opacity: 0.25;
@@ -122,18 +151,31 @@
 
         .icono:hover {
             opacity: 0.35;
+            /*transition: 0.3s;*/
         }
 
         .field2 {
             color: rgb(36, 55, 36);
-            right: 320px;
+            right: 520px;
             position: absolute;
             max-width: 35px;
         }
 
         .field3 {
             color: rgb(0, 0, 0);
-            right: 260px;
+            right: 460px;
+            position: absolute;
+        }
+
+        .field4a {
+            color: rgb(142, 152, 179);
+            right: 340px;
+            position: absolute;
+        }
+
+        .field4b {
+            color: rgb(142, 152, 179);
+            right: 230px;
             position: absolute;
         }
 
@@ -207,17 +249,110 @@
             font-size: 36px;
             margin-left: 50px;
         }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-contenido {
+            background-color: #fff;
+            /* Fondo blanco para el contenido */
+            margin: 20% auto;
+            /* Posicionar en el centro */
+            padding: 25px;
+            /*border: 0px solid #ccc;*/
+            border-radius: 15px;
+            /* Bordes redondeados */
+            max-width: 800px;
+            /* Ancho máximo */
+            margin: 0;
+        }
+
+        #cerrarModal {
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            border: 0;
+            background-color: #ffffff;
+            float: right;
+            color: gray;
+            cursor: pointer;
+        }
+
+        #cerrarModal:hover {
+            background-color: #ececec;
+        }
+
+        #abrirModal {
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            border: 0;
+            background-color: #eee;
+            float: right;
+            color: #599ed6;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        #abrirModal:hover {
+            background-color: #b6ccde;
+        }
     </style>
 </head>
 
+
 <body style="font-family:'Open Sans', sans-serif;font-size:15px;margin:0;">
+
+    <div id="modal" class="modal">
+
+        <div class="modal-contenido">
+            <button id="cerrarModal">⨉</button>
+            <p><b>Presto</b> es un programa de gestión de costos y tiempos de obra, que en EDILIZIA usamos para
+                presupuestar. </p>
+            <p>Actualmente contamos con 4 licencias, una de las cuales está destinada a Obras. Para acceder a la misma,
+                solicitar a Costos el usuario y contraseña. Se debe tener el programa descargado e instalado. </p>
+            <p>Aquí simulamos un visualizador del presupuesto de la obra, similar a la vista en árbol del programa, que
+                puede usarse libremente para consulta por parte de cualquier persona con acceso a este sitio.</p>
+            <p>Tener en cuenta que:</p>
+            <ul>
+                <li> todos los números que figuran acá se corresponden con el presupuesto de costo. El presupuesto de
+                    venta debe consultarse en Presupuestos Contratados.</li>
+                <li> la codificación de estos ítems puede diferir de los que figuran en Presupuestos Contratados.</li>
+                <li> la columna Cant. de un concepto indica el rendimiento de ese concepto en relación al concepto
+                    inmediatamente superior. Por ejemplo,
+                    <code>Vigas 25 m3 > Hierro nervurado cortado y doblado 50 kg</code> indica que en 1 m3 de vigas
+                    están cotizados 50 kg de hierro
+                </li>
+                <li> todo concepto tiene una naturaleza, que puede ser Material, Mano de obra, Maquinaria, Partida,
+                    Capítulo, Otros. Las columnas Un. Mat y Un. Mdo engloban todos los conceptos inferiores cuya
+                    naturaleza sean Material y Mano de Obra, respectivamente. Los conceptos de otras naturalezas no se
+                    computan en ninguna de estas columnas, sí lo hacen en la columna Precio Unitario.</li>
+
+            </ul>
+            <p>[En elaboración...]</p>
+
+        </div>
+    </div>
+
 
     <div id="header">
         <div
             style=" display: flex;   justify-content: space-between;background-color: #ffffff;padding-top: 20px; padding-bottom: 10px;">
-            <span style="color: #091533;font-size: 20px;padding-left:10px;cursor:pointer" onclick="openNav()">☰ 338 PSP
+            <span style="color: #091533;font-size: 20px;padding-left:10px;cursor:pointer" onclick="openNav()">☰
+                &nbsp;338 PSP
                 002 - ROSFAR</span>
             <div>
+                <button id="abrirModal">?</button>
                 <!-- <label for="expand-options">Opciones de expansión:</label> -->
                 <select id="expand-options" style="margin-right: 10px;">
                     <option value="nada">...</option>
@@ -229,9 +364,13 @@
         <div>
             <div style="background-color: rgb(27, 58, 76);height: 30px;align-content: center;">
                 <span style="max-width: calc(100% - 600px); "></span>
-                <span style="right: 345px;position: absolute;">Un.</span>
-                <span style="right: 285px;position: absolute;">Cant.</span>
-                <span style="right: 145px;position: absolute;">Precio Unitario</span>
+                <span style="right: 520px;position: absolute;">Un.</span>
+                <span style="right: 460px;position: absolute;">Cant.</span>
+                <span style="right: 375px;position: absolute;">Un. Mat</span>
+                <span style="right: 275px;position: absolute;">Un. MdO</span>
+                <!-- <span style="right: 255px;position: absolute;cursor: pointer;" onclick="addcolumns()">+</span> -->
+                <span style="right: 145px;position: absolute;" title="Color gris: precio calculado">Precio
+                    Unitario</span>
                 <span style="right: 65px;position: absolute;">Total</span>
             </div>
         </div>
@@ -245,12 +384,31 @@
         <a href="#" style="padding: 0 30px 0 30px;">
             <hr>
         </a>
-        <a href="#">Presupuestos Contratados</a>
+        <a
+            href="https://docs.google.com/spreadsheets/d/1z3MK8IiyU8R09vMlltxKMIvol1kYhsAFU-ArQfrJQxI/edit?gid=1411318143#gid=1411318143">Presupuestos
+            Contratados</a>
         <a href="#">Toolbox</a>
     </div>
 
     <ul id="menu" style="margin-right: 15px;min-width: 900px;"></ul>
     <script>
+
+        const botonAbrir = document.getElementById("abrirModal");
+        const modal = document.getElementById("modal");
+        function abrirModal() {
+            modal.style.display = "flex";
+        }
+
+        function cerrarModal() {
+            modal.style.display = "none";
+        }
+        botonAbrir.addEventListener("click", abrirModal);
+
+        const botonCerrar = document.getElementById("cerrarModal");
+        botonCerrar.addEventListener("click", cerrarModal);
+
+
+
 
         function openNav() {
             document.getElementById("mySidenav").style.width = "250px";
@@ -293,8 +451,20 @@
                 return `${entero},${decimal}`;
             }
 
+            PresMdO = Pres.map(function (x) {
+                return x * 0.3;
+            });
+
+            console.log(PresMdO)
+
+            PresMat = Pres.map(function (x) {
+                return x * 0.7;
+            });
+
             Pres = Pres.map(formatearNumero);
             TotPres = TotPres.map(formatearNumero);
+            PresMdO = PresMdO.map(formatearNumero);
+            PresMat = PresMat.map(formatearNumero);
 
             function buildTree(superior, inferior) {
                 const tree = {};
@@ -362,9 +532,16 @@
                     const span2 = document.createElement('span');
                     span2.className = 'field2';
                     span2.textContent = unidad[elements_inferior.indexOf(child)];
+                    span2.setAttribute('title', unidad[elements_inferior.indexOf(child)]);
                     const span3 = document.createElement('span');
                     span3.className = 'field3';
                     span3.textContent = CanPres[elements_inferior.indexOf(child)];
+                    const span4a = document.createElement('span');
+                    span4a.className = 'field4a';
+                    span4a.textContent = PresMat[elements_inferior.indexOf(child)];
+                    const span4b = document.createElement('span');
+                    span4b.className = 'field4b';
+                    span4b.textContent = PresMdO[elements_inferior.indexOf(child)];
                     const span4 = document.createElement('span');
                     span4.className = 'field4';
                     span4.textContent = Pres[elements_inferior.indexOf(child)];
@@ -381,7 +558,7 @@
                         case 'Capítulo': src_icon = "https://cdn-icons-png.flaticon.com/512/6702/6702850.png"; break;
                         case 'Partida': src_icon = "https://cdn-icons-png.flaticon.com/512/6911/6911872.png"; break;
                         case 'Mano de obra': src_icon = "https://cdn-icons-png.flaticon.com/512/2760/2760298.png"; break;
-                        case 'Maquinaria': src_icon = "https://cdn-icons-png.flaticon.com/512/6132/6132252.png"; break;
+                        case 'Maquinaria': src_icon = "https://cdn-icons-png.flaticon.com/512/226/226360.png"; break;
                         case 'Material': src_icon = "https://cdn-icons-png.flaticon.com/512/6450/6450177.png"; break;
                         default: src_icon = "https://cdn-icons-png.flaticon.com/512/2760/2760298.png";
                     }
@@ -395,6 +572,8 @@
                     container.appendChild(span1);
                     container.appendChild(span2);
                     container.appendChild(span3);
+                    container.appendChild(span4a);
+                    container.appendChild(span4b);
                     container.appendChild(span4);
                     container.appendChild(span5);
                     container.appendChild(icono_nat);
@@ -485,6 +664,8 @@
                     }
                 }
             }
+
+
         }
 
 
