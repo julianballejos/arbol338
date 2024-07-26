@@ -11,6 +11,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         #header {
             position: -webkit-sticky;
@@ -261,6 +265,7 @@
             z-index: 1;
             justify-content: center;
             align-items: center;
+            transition: 0.5s;
         }
 
         .modal-contenido {
@@ -268,11 +273,11 @@
             /* Fondo blanco para el contenido */
             margin: 20% auto;
             /* Posicionar en el centro */
-            padding: 25px;
+            padding: 25px 0 0 0;
             /*border: 0px solid #ccc;*/
             border-radius: 15px;
             /* Bordes redondeados */
-            max-width: 800px;
+            max-width: 750px;
             /* Ancho máximo */
             margin: 0;
         }
@@ -282,10 +287,13 @@
             width: 30px;
             height: 30px;
             border: 0;
-            background-color: #ffffff;
+            background-color: #fff;
             float: right;
             color: gray;
             cursor: pointer;
+            z-index: 1;
+            position: relative;
+            margin-right: 20px;
         }
 
         #cerrarModal:hover {
@@ -302,10 +310,130 @@
             color: #599ed6;
             cursor: pointer;
             margin-right: 5px;
+            font-weight: 600;
         }
 
         #abrirModal:hover {
             background-color: #b6ccde;
+        }
+
+        .hoverable {
+            position: fixed;
+            background-color: #1b3a4c;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            opacity: 0%;
+            left: 4px;
+            cursor: pointer;
+        }
+
+        .hoverable:hover {
+            opacity: 10%;
+        }
+
+        #loading-indicator {
+            position: fixed;
+            justify-content: center;
+            align-items: center;
+
+        }
+
+
+        .spinner {
+
+            border: 10px solid #f3f3f3;
+            /* Light grey */
+            border-top: 10px solid #3498db;
+            /* Blue */
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Slideshow container */
+        .slideshow-container {
+            position: relative;
+            background: white;
+            height: 300px;
+        }
+
+
+        /* Slides */
+        .mySlides {
+            display: none;
+            padding-top: 25px;
+            padding-bottom: 25px;
+            padding-left: 45px;
+            padding-right: 45px;
+            text-align: left;
+        }
+
+        /* Next & previous buttons */
+        .prev,
+        .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            width: auto;
+            margin-top: -30px;
+            padding: 16px;
+            color: #888;
+            font-weight: bold;
+            font-size: 20px;
+            border-radius: 0 3px 3px 0;
+            user-select: none;
+        }
+
+        /* Position the "next button" to the right */
+        .next {
+            position: absolute;
+            right: 0;
+            border-radius: 3px 0 0 3px;
+        }
+
+        /* On hover, add a black background color with a little bit see-through */
+        .prev:hover,
+        .next:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+        }
+
+        /* The dot/bullet/indicator container */
+        .dot-container {
+            text-align: center;
+            padding: 10px;
+            /*background: #ddd;*/
+        }
+
+        /* The dots/bullets/indicators */
+        .dot {
+            cursor: pointer;
+            height: 10px;
+            width: 10px;
+            margin: 0 2px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            transition: background-color 0.4s ease;
+        }
+
+        /* Add a background color to the active dot/circle */
+        .active,
+        .dot:hover {
+            background-color: #0059b3;
         }
     </style>
 </head>
@@ -317,29 +445,83 @@
 
         <div class="modal-contenido">
             <button id="cerrarModal">⨉</button>
-            <p><b>Presto</b> es un programa de gestión de costos y tiempos de obra, que en EDILIZIA usamos para
-                presupuestar. </p>
-            <p>Actualmente contamos con 4 licencias, una de las cuales está destinada a Obras. Para acceder a la misma,
-                solicitar a Costos el usuario y contraseña. Se debe tener el programa descargado e instalado. </p>
-            <p>Aquí simulamos un visualizador del presupuesto de la obra, similar a la vista en árbol del programa, que
-                puede usarse libremente para consulta por parte de cualquier persona con acceso a este sitio.</p>
-            <p>Tener en cuenta que:</p>
-            <ul>
-                <li> todos los números que figuran acá se corresponden con el presupuesto de costo. El presupuesto de
-                    venta debe consultarse en Presupuestos Contratados.</li>
-                <li> la codificación de estos ítems puede diferir de los que figuran en Presupuestos Contratados.</li>
-                <li> la columna Cant. de un concepto indica el rendimiento de ese concepto en relación al concepto
-                    inmediatamente superior. Por ejemplo,
-                    <code>Vigas 25 m3 > Hierro nervurado cortado y doblado 50 kg</code> indica que en 1 m3 de vigas
-                    están cotizados 50 kg de hierro
-                </li>
-                <li> todo concepto tiene una naturaleza, que puede ser Material, Mano de obra, Maquinaria, Partida,
-                    Capítulo, Otros. Las columnas Un. Mat y Un. Mdo engloban todos los conceptos inferiores cuya
-                    naturaleza sean Material y Mano de Obra, respectivamente. Los conceptos de otras naturalezas no se
-                    computan en ninguna de estas columnas, sí lo hacen en la columna Precio Unitario.</li>
+            <div class="slideshow-container">
 
-            </ul>
-            <p>[En elaboración...]</p>
+                <div class="mySlides">
+
+                    <p class=" w3-animate-right">
+
+                    <p><b>Presto</b> es un programa de gestión de costos y tiempos de obra que actualmente usamos en EDILIZIA para la confección de presupuestos. </p>
+                    <p>Actualmente contamos con 4 licencias, una de las cuales está destinada a Obras. Para acceder a esta licencia,
+                        solicitar a Costos el usuario y contraseña. Se debe tener el programa descargado e instalado.
+                    </p>
+                    <p>Aquí simulamos un visualizador del presupuesto de la obra, similar a la vista en árbol del
+                        programa, que
+                        puede usarse libremente para consulta por parte de cualquier persona con acceso a este sitio.
+                    </p>
+
+
+                </div>
+
+                <div class="mySlides">
+
+                    <p class=" w3-animate-right">
+
+                    <p>Tener en cuenta que:</p>
+                    <ul>
+                        <li style="margin-bottom:10px;"> todos los números que figuran acá se corresponden con el
+                            presupuesto de costo. El
+                            presupuesto de
+                            venta debe consultarse en Presupuestos Contratados.</li>
+                        <li style="margin-bottom:10px;"> la codificación de estos ítems puede diferir de los que figuran
+                            en Presupuestos
+                            Contratados.</li>
+                        <li style="margin-bottom:10px;"> la columna Cant. de un concepto indica el rendimiento de ese
+                            concepto en relación al
+                            concepto
+                            inmediatamente superior. Por ejemplo,
+                            <code>Vigas 25 m3 > Hierro nervurado cortado y doblado 50 kg</code> indica que en 1 m3 de
+                            vigas
+                            están cotizados 50 kg de hierro
+                        </li>
+
+
+                    </ul>
+
+                </div>
+
+                <div class="mySlides">
+
+                    <p class=" w3-animate-right">
+
+
+                    <ul>
+
+                        <li style="margin-bottom:10px;"> todo concepto tiene una naturaleza, que puede ser Material,
+                            Mano de obra, Maquinaria,
+                            Partida,
+                            Capítulo, Otros. Las columnas Un. Mat y Un. Mdo engloban todos los conceptos inferiores cuya
+                            naturaleza sean Material y Mano de Obra, respectivamente. Los conceptos de otras naturalezas
+                            no se
+                            computan en ninguna de estas columnas, sí lo hacen en la columna Precio Unitario.
+                        </li>
+                        <li style="margin-bottom:10px;"> [en elaboración]
+                        </li>
+
+                    </ul>
+
+                </div>
+
+                <a class="prev" onclick="plusSlides(-1)">❮</a>
+                <a class="next" onclick="plusSlides(1)">❯</a>
+
+            </div>
+
+            <div class="dot-container">
+                <span class="dot" onclick="currentSlide(1)"></span>
+                <span class="dot" onclick="currentSlide(2)"></span>
+                <span class="dot" onclick="currentSlide(3)"></span>
+            </div>
 
         </div>
     </div>
@@ -348,6 +530,7 @@
     <div id="header">
         <div
             style=" display: flex;   justify-content: space-between;background-color: #ffffff;padding-top: 20px; padding-bottom: 10px;">
+            <!-- <div class="hoverable"></div> -->
             <span style="color: #091533;font-size: 20px;padding-left:10px;cursor:pointer" onclick="openNav()">☰
                 &nbsp;338 PSP
                 002 - ROSFAR</span>
@@ -358,6 +541,7 @@
                     <option value="nada">...</option>
                     <option value="expand-all">Expandir todo</option>
                     <option value="collapse-all">Contraer todo</option>
+                    <option value="expand-level-2">Hasta nivel...</option>
                 </select>
             </div>
         </div>
@@ -390,16 +574,65 @@
         <a href="#">Toolbox</a>
     </div>
 
+    <div id="spinner-container"
+        style="  position: fixed;    top: 0;    left: 0;    width: 100%;    height: 100%;    z-index: 1;    justify-content: center;    align-items: center;    display: flex;">
+
+        <div id="loading-indicator">
+            <!-- <div class="spinner"></div> -->
+            <div class="spinner-grow text-muted"></div>
+        </div>
+
+    </div>
+
     <ul id="menu" style="margin-right: 15px;min-width: 900px;"></ul>
+
+
     <script>
+
+        var slideIndex = 1;
+        showSlides(slideIndex);
+
+        function plusSlides(n) {
+            showSlides(slideIndex += n);
+        }
+
+        function currentSlide(n) {
+            showSlides(slideIndex = n);
+        }
+
+        function showSlides(n) {
+            var i;
+            var slides = document.getElementsByClassName("mySlides");
+            var dots = document.getElementsByClassName("dot");
+            if (n > slides.length) { slideIndex = 1 }
+            if (n < 1) { slideIndex = slides.length }
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            for (i = 0; i < dots.length; i++) {
+                dots[i].className = dots[i].className.replace(" active", "");
+            }
+            slides[slideIndex - 1].style.display = "block";
+            dots[slideIndex - 1].className += " active";
+        }
+
+
+        // Mostrar el indicador de carga
+        //document.getElementById('loading-indicator').style.display = 'block';
+
+        // ... (Código para construir el árbol)
+
+
 
         const botonAbrir = document.getElementById("abrirModal");
         const modal = document.getElementById("modal");
         function abrirModal() {
+            modal.style.transition = "2.5s";
             modal.style.display = "flex";
         }
 
         function cerrarModal() {
+            modal.style.transition = "2.5s";
             modal.style.display = "none";
         }
         botonAbrir.addEventListener("click", abrirModal);
@@ -419,6 +652,9 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
+
+            document.getElementById('loading-indicator').style.display = 'block';
+
             const elements_superior = ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '01', '01', '01', '01', '01', '02', '02', '02', '02', '02', '02', '02', '02', '02', '02', '03', '04', '05', '05', '05', '05', '05', '05', '06', '06', '06', '06', '06', '06', '06', '06', '06', '06', '06', '06', '06', '07', '07', '08', '08', '1.1', '1.1', '1.1', '1.1', '1.1', '1.1.1', '1.1.1', '1.2', '1.2', '1.2', '1.3', '1.4', '1.5', '11', '11.6', '15', '15.1', '2.1', '2.10', '2.2', '2.3', '2.4', '2.5', '2.6', '2.7', '2.8', '2.9', '2.9', '2.9', '24', '24.13', '24.13', '28', '28.1', '28.1', '3.1', '3.1', '36', '36.2', '38', '38.1', '39', '39', '39', '39.1', '39.2', '39.2', '39.3', '40', '40', '40.1', '40.2', '41', '41.1', '42', '42.1', '5.1', '5.2', '5.3', '5.4', '5.5', '5.6', '6.1', '6.10', '6.11', '6.12', '6.13', '6.2', '6.3', '6.4', '6.5', '6.6', '6.7', '6.8', '6.8', '6.9', '7.1', '7.1', '7.2', '7.2', '7.7.1', '7.7.1', '8.4', '8.5', 'O02.010', 'O02.010', 'O02.010', 'O02.010', 'O02.010', 'O02.010', 'O02.010', 'O02.010', 'O02.010', 'O02.010', 'O02.010', 'O02.010', 'O02.010', 'O02.010.011', 'O02.010.012', 'O02.010.013', 'O02.010.020', 'O02.010.021', 'O02.010.030', 'O02.010.031', 'O02.010.040', 'O02.010.060', 'O02.010.070', 'O02.010.090', 'O02.011', 'O02.011', 'O02.011', 'O02.011', 'O02.011', 'O02.011', 'O02.011', 'O02.011', 'O02.011', 'O02.011', 'O02.011', 'O02.011', 'O02.011', 'O02.020', 'O02.020', 'O02.020', 'O02.020', 'O02.020', 'O02.020', 'O02.020', 'O02.020', 'O02.020', 'O02.020', 'O02.020', 'O02.020', 'O02.020', 'O02.020.011', 'O02.020.012', 'O02.020.013', 'O02.020.020', 'O02.020.021', 'O02.020.030', 'O02.020.031', 'O02.020.040', 'O02.020.060', 'O02.020.070', 'O02.020.090', 'O03.0011', 'O03.0011', 'O03.0015', 'O03.0015', 'O03.0020', 'O03.0020', 'O03.0021', 'O03.0021', 'O03.0022', 'O03.0022', 'O03.0060', 'O03.0070', 'O03.0090', 'O03.0100', 'O03.0132', 'O03.0132', 'O03.0140', 'O03.0140', 'O03.0230', 'O03.0230', 'O03.0242', 'O03.0242', 'O03.0280', 'O03.0310', 'O03.0362', 'O03.0362', 'O03.0371', 'O03.0371', 'O03.0390', 'O03.0390', 'O03.0400', 'O03.0400', 'O09MO700', 'O09MO700', 'PAI400.0011', 'PAI400.0011', 'PAI400.0030', 'PAI400.0030', 'PAI500.0010', 'PAI500.0040', 'PAM120.0010', 'PAM140.0020', 'PAM140.0020', 'PAM140.0020', 'PAM140.0020', 'PAM600.0010', 'PAM600.0010', 'PAM700.0010', 'PAM700.0011', 'PAM800.0016', 'PAM800.0016', 'PAR300.1010', 'PAR300.1010', 'PCI100.0053', 'PCI100.0053', 'PCP100.0030', 'PCP100.0030', 'PCP100.0030', 'PCP100.0030a', 'PCP100.0030a', 'PCP100.0030a', 'PCP300.0020', 'PCP300.0020', 'PCP300.0020', 'PCP300.0020', 'PCP300.0020', 'PDE200.0010', 'PDE200.0010', 'PDE300.0010', 'PDE300.0010', 'PDE300.0010', 'PDE300.0010', 'PDE400.0010', 'PDE400.0020', 'PDE400.0030', 'PEA100.0010', 'PEA100.0010', 'PEA100.0010', 'PEA200.0040', 'PEA300.0010', 'PEA300.0010', 'PEA300.0110', 'PEA300.0310', 'PEX200.0014', 'PEX200.0016', 'PEX200.0016', 'PEX200.0018', 'PEX200.0020', 'PEX200.0020', 'PEX300.0012', 'PEX300.0012', 'PEX300.0112', 'PEX300.0112', 'PEX400.0020', 'PEX400.0020', 'PEX400.0040', 'PEX400.0050', 'PEX500.0010', 'PEX500.0061', 'PEX500.0061', 'PEX500.0061', 'PHA100.0010', 'PHA100.0010', 'PHA100.0010', 'PHA100.0020', 'PHA100.0020', 'PHA100.0020', 'PHA100.0020A', 'PHA100.0020A', 'PHA100.0020A', 'PHA100.0022', 'PHA100.0022', 'PHA100.0022', 'PHA100.0022c', 'PHA100.0022c', 'PHA100.0022c', 'PHA100.0024', 'PHA100.0024', 'PHA100.0024', 'PHA100.0024', 'PHA100.0024', 'PHA100.0024', 'PHA100.0024A', 'PHA100.0024A', 'PHA100.0024A', 'PHA100.0024A', 'PHA100.0024A', 'PHA100.0024A', 'PHA100.0026', 'PHA100.0026', 'PHA100.0026', 'PHA100.0026', 'PHA100.0026', 'PHA100.0026', 'PHA100.0026A', 'PHA100.0026A', 'PHA100.0026A', 'PHA100.0026A', 'PHA100.0026A', 'PHA100.0026A', 'PHA100.0028', 'PHA100.0028', 'PHA100.0028', 'PHA100.0028', 'PHA100.0028', 'PHA100.0028', 'PHA100.0028A', 'PHA100.0028A', 'PHA100.0028A', 'PHA100.0028A', 'PHA100.0028A', 'PHA100.0028A', 'PHA100.0028B', 'PHA100.0028B', 'PHA100.0028B', 'PHA100.0028B', 'PHA100.0028B', 'PHA100.0028B', 'PHA100.0029a', 'PHA100.0029a', 'PHA100.0029a', 'PHA100.0029a', 'PHA100.0029a', 'PHA100.0029a', 'PHA100.0030', 'PHA100.0030', 'PHA100.0030', 'PHA100.0040', 'PHA100.0040', 'PHA100.0040', 'PHA100.0040', 'PHA100.0040', 'PHA100.0040', 'PHA100.0040B', 'PHA100.0040B', 'PHA100.0040B', 'PHA100.0040B', 'PHA100.0040B', 'PHA100.0040B', 'PHA100.0104', 'PHA300.0010i', 'PHA300.0010i', 'PHA300.0010i', 'PHA300.0012i', 'PHA300.0012iB', 'PHA300.0030', 'PHA300.0030', 'PHA300.0030', 'PHA300.0032', 'PHA300.0110i', 'PHA300.0110i', 'PHA300.0112i', 'PHA300.0112i', 'PHA300.0130', 'PHA300.0130', 'PHA300.0132', 'PHA300.0132', 'PHA300.0210', 'PHA300.0210', 'PHA300.0210', 'PHA300.0210', 'PHA300.0210', 'PHA300.0212', 'PHA300.0212', 'PHA300.0220', 'PHA300.0220', 'PHA300.0222', 'PHA300.0222', 'PHA300.0230', 'PHA300.0230', 'PHA300.0232', 'PHA300.0232', 'PHA300.0310i', 'PHA300.0312i', 'PHA300.0410', 'PHA300.0412', 'PHA400.0108', 'PHA400.0108', 'PHA400.0108', 'PHA400.0108', 'PHA400.0108', 'PHA400.0110', 'PHA400.0110', 'PHA400.0110', 'PHA400.0110', 'PHA400.0110', 'PHA400.0114', 'PHA400.0114', 'PHA400.0114', 'PHA400.0114', 'PHA400.0114', 'PHA400.0114', 'PHA400.0114', 'PHA400.0114', 'PHA400.0114', 'PHA400.0118', 'PHA400.0118', 'PHA400.0118', 'PHA400.0118', 'PHA400.0118', 'PHA400.0118', 'PHA400.0118', 'PHA400.0118', 'PHA400.0118', 'PHA400.0120', 'PHA400.0120', 'PHA400.0120', 'PHA400.0120', 'PHA400.0120', 'PHA400.0120', 'PHA400.0120', 'PHA400.0120', 'PHA400.0120', 'PHA400.0122', 'PHA400.0122', 'PHA400.0122', 'PHA400.0122', 'PHA400.0122', 'PHA400.0122', 'PHA400.0122', 'PHA400.0122', 'PHA400.0122', 'PHO100.0020', 'PHO100.0020', 'PHO100.0020', 'PHO100.0020', 'PHO100.0020', 'PHO100.0020', 'PHO100.0020', 'PI1201.0021', 'PI1201.0040', 'PI1201.0040', 'PI1201.0040', 'PI1201.5002', 'PI1201.5002', 'PI1201.5002', 'PI1201.5002', 'PI1301.4010', 'PI1301.4010', 'PI1301.4010', 'PI1301.4011', 'PI1301.4011', 'PI1301.4011', 'PI1301.4012', 'PI1301.4012', 'PI1301.4012', 'PI1301.4013', 'PI1301.4013', 'PI1301.4013', 'PI1301.5001', 'PI1301.5001', 'PI7100.0030', 'PI7100.0030', 'PLI100.0010', 'PMM100.0010', 'PMM100.0010', 'PMM100.0020', 'PMM100.0020', 'PMM100.0030', 'PMM100.0030', 'PMO100.0022', 'PMO100.0022', 'PMO100.0022', 'PMO100.0022', 'PMO100.0022', 'PMO100.0022', 'PMO100.0022', 'PMO200.0010', 'PMO200.0012', 'PMO200.0012', 'PMO200.0012', 'PPI200.030', 'PPI200.030', 'PPI200.030', 'PPI200.030', 'PRE400.0022', 'PRE400.0022', 'PRP800.0010a', 'PRP800.0010a', 'PRP800.0010a', 'PRP800.0010a', 'PRP800.0010a', 'PRP800.0010a', 'PRP900.1010', 'PRP900.1010', 'PTE200.0010', 'PTE200.0010', 'PTE200.0110', 'PTE200.0110', 'PTE200.0110', 'PTE900.0120', 'PTE900.0120', 'PTE900.0120', 'PTE900.0120', 'PVA100.510', 'PVA100.510', 'PVA100.510', 'PVA100.512', 'PVA100.512'];
 
             const elements_inferior = ['01', '02', '03', '05', '06', '07', '08', '11', '38', '39', '40', '41', '42', '04', '15', '28', '36', '24', '1.1', '1.2', '1.3', '1.4', '1.5', '2.1', '2.2', '2.3', '2.4', '2.5', '2.6', '2.8', '2.7', '2.9', '2.10', '3.1', '4.1', '5.1', '5.2', '5.3', '5.4', '5.5', '5.6', '6.1', '6.2', '6.3', '6.4', '6.6', '6.7', '6.8', '6.9', '6.5', '6.10', '6.11', '6.12', '6.13', '7.1', '7.2', '8.4', '8.5', 'M50.000.020', 'M50.000.030', 'M50.000.040', 'M50.000.036', 'M50.000.035', 'O03.0100', '1.1.1.1', 'M50.000.010', 'M50.000.012', 'M50.000.060', 'M50.000.0070', 'PVA100.510', 'PRZ100.0010', '11.6', 'PHA100.0104', '15.1', 'PRP800.0010a', 'PEX300.0112', 'PEX200.0016', 'PEX200.0016', 'PEX200.0016', 'PEX500.0061', 'PEX200.0016', 'PEX200.0016', 'PEX200.0016', 'PEX200.0020', 'PDE200.0010', 'PDE300.0010', 'PEX500.0010', '24.13', 'PTE200.0010', 'PTE200.0110', '28.1', 'PI1201.0021', 'PI1201.0040', 'PLI100.0010', 'M19.000.150', '36.2', 'PI7100.0030', '38.1', 'PLI100.0010B', '39.1', '39.2', '39.3', 'PCI100.0001', 'M03.200.1052', 'M03.400.0013', '39.3.1', '40.1', '40.2', 'PCI100.0012', 'PCI100.0014', '41.1', 'PCI100.0022', '42.1', 'PCI100.0053', 'PHA100.0030', 'PHA100.0020A', 'PHA100.0022', 'PHA100.0022c', 'PHA100.0020', 'PHA100.0010', 'PHA100.0028A', 'PHA100.0040B', 'PHA100.0040B', 'PHA100.0040B', 'PHA100.0029a', 'PHA100.0028B', 'PHA100.0026', 'PHA100.0024', 'PHA100.0024', 'PHA100.0024A', 'PHA100.0026A', 'PHA100.0040', '7.7.1', 'PHA100.0028', 'PAI400.0011', 'PCP100.0030', 'PAI400.0011', 'PCP100.0030a', 'M03.200.0020', 'PRP900.1010', 'PRE400.0022', 'PAI400.0030', 'O02.010.011', 'O02.010.012', 'O02.010.013', 'O02.010.020', 'O02.010.021', 'O02.010.030', 'O02.010.031', 'O02.010.040', 'O02.010.050', 'O02.010.060', 'O02.010.070', 'O02.010.080', 'O02.010.090', 'O01.102', 'O01.102', 'O01.102', 'O01.102', 'O01.102', 'O01.102', 'O01.102', 'O01.102', 'O01.102', 'O01.102', 'O01.102', 'O02.010.011', 'O02.010.012', 'O02.010.013', 'O02.010.020', 'O02.010.021', 'O02.010.030', 'O02.010.031', 'O02.010.040', 'O02.010.050', 'O02.010.060', 'O02.010.070', 'O02.010.081', 'O02.010.090', 'O02.020.011', 'O02.020.012', 'O02.020.013', 'O02.020.020', 'O02.020.021', 'O02.020.030', 'O02.020.031', 'O02.020.040', 'O02.020.050', 'O02.020.060', 'O02.020.070', 'O02.020.080', 'O02.020.090', 'O01.104', 'O01.104', 'O01.104', 'O01.104', 'O01.104', 'O01.104', 'O01.104', 'O01.104', 'O01.104', 'O01.104', 'O01.104', 'O01.021', 'O02.011', 'O01.022', 'O02.010', 'O01.021', 'O02.011', 'O01.021', 'O02.011', 'O01.022', 'O02.020', 'O01.902', 'O01.903', 'O01.903', 'O01.902', 'O01.022', 'O02.010', 'O01.022', 'O02.010', 'O01.042', 'O02.020', 'O01.042', 'O02.020', 'O01.902b', 'O01.903b', 'O01.042', 'O02.020', 'O01.042', 'O02.020', 'O01.042', 'O02.020', 'O01.043', 'O02.020', 'O01.043', 'O02.020', 'M08.010.0100', 'PAI500.0010', 'M08.010.0015', 'PAI500.0040', 'O03.0230', 'O03.0060', 'O03.0015', 'PAM800.0016', 'PAM600.0010', 'PAM700.0010', 'PAM700.0011', 'O03.0015', 'O03.0230', 'O03.0015', 'O03.0015', 'O03.0015', 'O03.0230', 'O03.0132', 'O03.0362', 'PCI110.0010', 'PCI110.0020', 'PHO100.0020', 'PCP300.0020', 'PAM140.0020', 'PCP300.0020', 'PAM140.0020', 'M01.600.0016', 'M03.200.1010', 'M03.300.0050', 'O03.0015', 'O03.0230', 'PMM100.0030', 'E21.020.0210', 'O03.0390', 'PDE400.0010', 'PDE400.0020', 'PDE400.0030', 'M19.000.150', 'O03.0390', 'O03.0390', 'O03.0390', 'PEA300.0010', 'PEA300.0110', 'PEA300.0310', 'PEA100.0010', 'M03.200.0060D', 'O03.0100', 'O03.0100', 'PPI200.030', 'E21.010.0205', 'PEX200.0014', 'PEX400.0050', 'E21.010.0216', 'PEX200.0018', 'PEX400.0050', 'E21.010.0250', 'E21.010.0252', 'PEX300.0012', 'PEX400.0020', 'E21.010.0216', 'E21.010.0180', 'E21.010.0180', 'PEX400.0040', 'O03.0371', 'M01.200.0040', 'M01.400.0010', 'PEX400.0050', 'PHA400.0108', 'M01.600.0016', 'M03.100.0002', 'PHA400.0114', 'M03.100.0002', 'M01.600.0020', 'PHA400.0114', 'M03.100.0002', 'M01.600.0020', 'PHA400.0114', 'M03.100.0002', 'M01.600.0020', 'PHA400.0114', 'M03.100.0002', 'M01.600.0020', 'PHA400.0118', 'M03.100.0002', 'M01.600.1010', 'M01.600.1020', 'PHA300.0010i', 'M01.600.0020', 'PHA400.0118', 'M03.100.0002', 'M01.600.1010', 'M01.600.1020', 'M01.600.0020', 'PHA300.0030', 'PHA400.0120', 'M03.100.0002', 'M01.600.1010', 'M01.600.1020', 'PHA300.0010i', 'M01.600.0020', 'PHA400.0120', 'M03.100.0002', 'M01.600.1010', 'M01.600.1020', 'M01.600.0020', 'PHA300.0030', 'PHA400.0118', 'M03.100.0002', 'M01.600.1010', 'M01.600.1020', 'PHA300.0012i', 'M01.600.0020', 'PHA400.0118', 'M03.100.0002', 'M01.600.1010', 'M01.600.1020', 'PHA300.0012i', 'M01.600.0020', 'PHA400.0118', 'M03.100.0002', 'M01.600.1010', 'M01.600.1020', 'M01.600.0020', 'PHA300.0012iB', 'PHA400.0118', 'M01.600.0016', 'M03.100.0002', 'M01.600.1010', 'M01.600.1020', 'PHA300.0032', 'PHA400.0110', 'M03.100.0002', 'M01.600.0020', 'PHA400.0122', 'M03.100.0002', 'M01.600.1010', 'M01.600.1020', 'PHA300.0010i', 'M01.600.0020', 'PHA400.0122', 'M03.100.0002', 'M01.600.1010', 'M01.600.1020', 'PHA300.0010i', 'M01.600.0020', 'O03.0021', 'PHA300.0110i', 'PHA300.0310i', 'PHA300.0312i', 'PHA300.0112i', 'PHA300.0132', 'PHA300.0130', 'PHA300.0310i', 'PHA300.0312i', 'PHA300.0132', 'PHA300.0210', 'PHA300.0220', 'PHA300.0212', 'PHA300.0222', 'PHA300.0210', 'PHA300.0230', 'PHA300.0212', 'PHA300.0232', 'M09.010.0101', 'M09.010.0112', 'M09.010.0130', 'M09.010.0140', 'M09.010.0150', 'M09.010.0101', 'M09.010.0112', 'M04.200.0020', 'M04.100.0001', 'M04.200.0020', 'M04.100.0001', 'M04.200.0010', 'M04.100.0001', 'M04.200.0010', 'M04.100.0001', 'PHA300.0410', 'PHA300.0412', 'M09.010.0112', 'M09.010.0112', 'O03.0020', 'O03.0140', 'O03.0021', 'M03.300.0050', 'M03.300.0030', 'O03.0020', 'O03.0140', 'O03.0021', 'M03.300.0050', 'M03.300.0030', 'O03.0020', 'O03.0011', 'O03.0021', 'M03.300.0030', 'M03.300.0050', 'M07.050.0010', 'E21.020.0165', 'E21.020.0180', 'E21.020.0170', 'O03.0011', 'O03.0020', 'O03.0021', 'M03.300.0030', 'M03.300.0050', 'M07.050.0010', 'E21.020.0165', 'E21.020.0180', 'E21.020.0170', 'O03.0011', 'O03.0020', 'O03.0021', 'M03.300.0030', 'M03.300.0050', 'M07.050.0010', 'E21.020.0165', 'E21.020.0180', 'E21.020.0170', 'O03.0011', 'O03.0020', 'O03.0021', 'M03.300.0030', 'M03.300.0050', 'M07.050.0010', 'E21.020.0165', 'E21.020.0180', 'E21.020.0170', 'M01.500.0010', 'M01.200.0030', 'M01.100.0010', 'M07.010.0001', 'PMO200.0010', 'PMM100.0020', 'PMM100.0010', 'PI1201.5002', 'M14.000.001', 'O03.0090', 'O03.0310', 'PI1301.4010', 'PI1301.4011', 'PI1301.4012', 'PI1301.4013', 'M14.000.100', 'M14.000.110', 'PI1301.5001', 'M14.000.101', 'M14.000.111', 'PI1301.5001', 'M14.000.102', 'M14.000.112', 'PI1301.5001', 'M14.000.103', 'M14.000.113', 'PI1301.5001', 'O03.0090', 'O03.0310', 'M14.000.003', 'O01.903', 'O03.0400', 'O09MO700', 'E21.020.0310', 'O09MO700', 'E21.020.0310', 'O09MO700', 'E21.020.0310', 'M01.500.0010', 'M01.100.0010', 'M07.010.0001', 'M07.020.0010', 'PMO200.0010', 'PMM100.0020', 'PMM100.0010', 'PMO200.0012', 'E21.020.0185', 'O03.0022', 'O03.0242', 'M17.010.063', 'M17.010.019', 'M17.010.034', 'O03.0070', 'PMO100.0022', 'PAM120.0010', 'M01.600.0018', 'M03.200.1020', 'M00.001', 'M07.010.0005', 'O01.902', 'O01.902b', 'M11.200.0210', 'PAR300.1010', 'M03.400.0040D', 'PTE900.0120', 'M03.400.0040D', 'PTE900.0120', 'PEA200.0040', 'O03.0060', 'O03.0280', 'M10.075.0020', 'PMM100.0030', 'PVA100.512', 'PVA100.514', '1.1.1', 'M03.000.001', 'O03.0100'];
@@ -455,7 +691,7 @@
                 return x * 0.3;
             });
 
-            console.log(PresMdO)
+            console.log(elements_superior)
 
             PresMat = Pres.map(function (x) {
                 return x * 0.7;
@@ -478,41 +714,7 @@
             }
 
 
-            function createTreeHT5ML(tree, parentName = elements_superior[0][0], isRoot = false) {
-                const ul = document.createElement('ul');
-                ul.className = 'interior';
-                if (isRoot) {
-                    ul.style.display = 'block'; // Ensure the root element's children are visible
-                    ul.style.backgroundColor = 'black';
-                }
-                tree[parentName].forEach((child, index) => {
-                    const li = document.createElement('li');
-                    if (tree[child]) {
-                        const toggle = document.createElement('div');
-                        toggle.className = 'toggle';
-                        toggle.textContent = child;
-                        toggle.addEventListener('click', function () {
-                            this.classList.toggle('expanded');
-                            const siblingUl = this.nextElementSibling;
-                            if (siblingUl) {
-                                siblingUl.style.display = siblingUl.style.display === 'block' ? 'none' : 'block';
-                            }
-                        });
-
-                        li.appendChild(toggle);
-                        li.appendChild(createTreeHTML(tree, child));
-                    } else {
-                        const a = document.createElement('a');
-                        a.href = "#";
-                        a.textContent = child;
-                        li.appendChild(a);
-                    }
-                    ul.appendChild(li);
-                });
-                return ul;
-            }
-
-            function createTreeHTML(tree, parentName = elements_superior[0][0], isRoot = false) {
+            function createTreeHTML(tree, parentName, isRoot = false) {
                 const ul = document.createElement('ul');
                 ul.className = 'interior';
                 if (isRoot) {
@@ -596,11 +798,13 @@
                 return ul;
             }
 
-            const tree = buildTree(elements_superior, elements_inferior);
+
+
+            const tree = buildTree(elements_superior, elements_inferior); console.log(elements_superior[0]);
             const menu = document.getElementById('menu');
             const rootLi = document.createElement('li');
-            rootLi.textContent = elements_superior[0][0];
-            rootLi.appendChild(createTreeHTML(tree, elements_superior[0][0], true));
+            rootLi.textContent = elements_superior[0];
+            rootLi.appendChild(createTreeHTML(tree, elements_superior[0], true));
             menu.appendChild(rootLi);
 
             const expandOptions = document.getElementById('expand-options');
@@ -612,7 +816,7 @@
                 } else if (selectedOption === 'collapse-all') {
                     collapseAll(tree);
                 } else if (selectedOption === 'expand-level-2') {
-                    expandToLevel(tree, 'Elemento 0', 2);
+                    expandToLevel(tree, "menu", 2);
                 }
             });
 
@@ -646,7 +850,7 @@
             function expandToLevel(tree, parentName, level) {
                 if (level === 0) return;
 
-                const ul = document.querySelector(`#${parentName} > ul`);
+                var ul = document.querySelector(`#${parentName} > ul > ul`);
                 if (ul) {
                     ul.style.display = 'block';
                     const children = ul.children;
@@ -665,15 +869,17 @@
                 }
             }
 
+            document.getElementById('spinner-container').style.display = 'none';
+
 
         }
 
 
 
-
-
-
         );
+
+        // Ocultar el indicador de carga al finalizar
+        //document.getElementById('loading-indicator').style.display = 'none';
     </script>
 </body>
 
