@@ -752,7 +752,7 @@
 
 
 
-            console.log(NatC.length)
+            /*console.log(NatC.length)
             console.log(elements_superior.length)
             console.log(elements_inferior.length)
             console.log(descripcion.length)
@@ -761,7 +761,7 @@
             console.log(Pres.length)
             console.log(TotPres.length)
             console.log(PresMdO.length)
-            console.log(PresMat.length)
+            console.log(PresMat.length)*/
 
 
 
@@ -1084,9 +1084,8 @@
                 arrayDeArrays.forEach((columna, index) => {
                     const cell = document.createElement('td');
                     if (index > 3) {
-                        console.log(columna[i])
                         cell.style.textAlign = "right";
-                        try{cell.textContent = formatearNumero(columna[i]);}catch{cell.textContent = (columna[i]);}
+                        try{cell.textContent = formatearNumero(columna[i]);}catch{cell.textContent = (columna[i]);}//formatearNumero(columna[i])
                     } else {
                         cell.textContent = (columna[i]);
                     }
@@ -1124,8 +1123,8 @@
                 let aText = a.cells[columnIndex].textContent.trim().toLowerCase();
                 let bText = b.cells[columnIndex].textContent.trim().toLowerCase();
 
-                const aNum = parseFloat(aText.replace(/,/g, ''));
-                const bNum = parseFloat(bText.replace(/,/g, ''));
+                const aNum = parseFloat(aText.replaceAll('.', '').replaceAll(',', '.'));
+                const bNum = parseFloat(bText.replaceAll('.', '').replaceAll(',', '.'));
 
                 if (!isNaN(aNum) && !isNaN(bNum)) {
                     return isAsc ? aNum - bNum : bNum - aNum;
@@ -1145,10 +1144,10 @@
 
 
         $("#buttonB").click(function () {
-            $("#sortableTable").fadeIn("slow");
+            $("#sortableTable").fadeIn("400");
         });
         $("#buttonA").click(function () {
-            $("#menu_container").fadeIn("slow");
+            $("#menu_container").fadeIn("400");
         });
 
 
